@@ -1,23 +1,437 @@
-import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import Benefits from "@/components/Benefits";
-import Process from "@/components/Process";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
+import React, { useMemo, useState, useEffect } from "react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield } from "lucide-react";
 
-const Index = () => {
-  return (
-    <div className="min-h-screen">
-      <Header />
-      <Hero />
-      <Services />
-      <Benefits />
-      <Process />
-      <Contact />
-      <Footer />
-    </div>
-  );
+// === Полка+ — лендинг с ЛК и ролями ===
+const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
+
+const ROLES = {
+  "Владелец": ["view_requests", "view_orders", "view_finance", "manage_users"],
+  "Менеджер МП": ["view_requests", "view_orders"],
+  "Сотрудник": ["view_requests"],
 };
 
-export default Index;
+const CheckIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.59a.75.75 0 1 0-1.22-.9l-3.3 4.47-1.57-1.57a.75.75 0 0 0-1.06 1.06l2.25 2.25c.32.32.83.28 1.1-.09l3.8-5.22Z" clipRule="evenodd"/></svg>
+);
+
+const Section = ({ id, children, className = "" }: { id?: string; children: any; className?: string }) => (
+  <section id={id} className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>{children}</section>
+);
+
+// Тарифы Полка+ (для витрины)
+const PRICES = {
+  pickup: { pallet: 800, box: 80, palletBulk: 600 },
+  count: { upTo1000: 1.5, over1000: 1 },
+  mark: { lt100: 7, lt500: 5, gte500: 4 },
+  pack: { boppSmall: 9, boppLarge: 12, zipSmall: 10, zipLarge: 14, bundle: 2 },
+  storage: { boxPerDay: 40, palletPerDay: 60, freeDays: 3 },
+  delivery: { perCube: 400, extraBox: 80, pallet: 900 },
+  analytics: { extendedPerMonth: 3000, percent: 0.02 },
+  photo: { perSku: 150, video: 500, spin: 300 },
+  extras: { shipmentCreate: 150, honestSign: 2, auditPerMonth: 2000 },
+};
+
+const money = (x) => new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(x || 0);
+
+function Modal({ open, onClose, children, title }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative z-10 w-full max-w-md rounded-2xl p-6 shadow-xl bg-white">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold" style={{ color: COLORS.dark }}>{title}</h3>
+          <button onClick={onClose} className="text-sm" style={{ color: '#6B7280' }}>Закрыть</button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default function Index() {
+  const [activePage, setActivePage] = useState('home'); // 'home' | 'account'
+  const [user, setUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [errors, setErrors] = useState({ inn: '' });
+
+  useEffect(() => {
+    const saved = localStorage.getItem('polka_user');
+    if (saved) setUser(JSON.parse(saved));
+  }, []);
+
+  function validateINN(inn) { return /^\d{10}(\d{2})?$/.test((inn || '').trim()); }
+
+  function handleAuthSubmit(type, e) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const name = (fd.get('name') || '').toString();
+    const email = (fd.get('email') || '').toString();
+    const inn = (fd.get('inn') || '').toString();
+    const role = (fd.get('role') || '').toString();
+    if (type === 'register' && !validateINN(inn)) { setErrors({ inn: 'ИНН должен содержать 10 или 12 цифр' }); return; }
+    const newUser = { name: name || 'Клиент', email, inn, role: role || 'Сотрудник' };
+    localStorage.setItem('polka_user', JSON.stringify(newUser));
+    setUser(newUser); setShowLogin(false); setShowRegister(false); setActivePage('account'); setErrors({ inn: '' });
+  }
+
+  const logout = () => { localStorage.removeItem('polka_user'); setUser(null); setActivePage('home'); };
+
+  // калькулятор (короткая версия)
+  const [input, setInput] = useState({ palletsPickup: 0, boxesPickup: 0, unitsCount: 0, unitsMark: 0, packType: 'boppSmall', bundles: 0, storageBoxes: 0, storagePallets: 0, storageDays: 0, cubesDelivery: 0, extraBoxesDelivery: 0, palletsDelivery: 0, photoSkus: 0, videos: 0, spins: 0, shipments: 0, honestSignUnits: 0 });
+  const handle = (k) => (e) => setInput(s => ({ ...s, [k]: e.target.type === 'number' ? Number(e.target.value) : e.target.value }));
+  const total = useMemo(() => {
+    const pickup = input.palletsPickup * PRICES.pickup.pallet + input.boxesPickup * PRICES.pickup.box;
+    const count = input.unitsCount <= 1000 ? input.unitsCount * PRICES.count.upTo1000 : 1000 * PRICES.count.upTo1000 + (input.unitsCount - 1000) * PRICES.count.over1000;
+    let markUnit = 0; if (input.unitsMark > 500) markUnit = PRICES.mark.gte500; else if (input.unitsMark > 100) markUnit = PRICES.mark.lt500; else if (input.unitsMark > 0) markUnit = PRICES.mark.lt100;
+    const mark = input.unitsMark * markUnit;
+    const pack = PRICES.pack[input.packType] * input.unitsMark + PRICES.pack.bundle * input.bundles;
+    const billableDays = Math.max(0, input.storageDays - PRICES.storage.freeDays);
+    const storage = billableDays * (input.storageBoxes * PRICES.storage.boxPerDay + input.storagePallets * PRICES.storage.palletPerDay);
+    const delivery = input.cubesDelivery * PRICES.delivery.perCube + input.extraBoxesDelivery * PRICES.delivery.extraBox + input.palletsDelivery * PRICES.delivery.pallet;
+    const photo = input.photoSkus * PRICES.photo.perSku + input.videos * PRICES.photo.video + input.spins * PRICES.photo.spin;
+    const extras = input.shipments * PRICES.extras.shipmentCreate + input.honestSignUnits * PRICES.extras.honestSign;
+    return { pickup, count, mark, pack, storage, delivery, photo, extras, sum: pickup + count + mark + pack + storage + delivery + photo + extras };
+  }, [input]);
+
+  const can = (perm) => user && ROLES[user.role]?.includes(perm);
+
+  // Логотипы как текст (надёжный фолбэк без файлов)
+  const BRANDS = ['Wildberries','Ozon','Яндекс.Маркет','Lamoda','Leroy Merlin','Avito','AliExpress','KazanExpress'];
+
+  if (activePage === 'account') {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: COLORS.lightBg }}>
+        {/* Header для кабинета */}
+        <header className="bg-white shadow-sm">
+          <Section className="flex items-center justify-between py-4">
+            <button onClick={() => setActivePage('home')} className="text-xl font-bold" style={{ color: COLORS.dark }}>← Полка+</button>
+            <div className="flex items-center gap-4">
+              <span className="text-sm" style={{ color: '#6B7280' }}>Добро пожаловать, {user?.name}</span>
+              <button onClick={logout} className="px-3 py-2 rounded-xl bg-red-100 text-red-700 text-sm">Выйти</button>
+            </div>
+          </Section>
+        </header>
+
+        {/* Кабинет */}
+        <Section className="py-8">
+          <h1 className="text-2xl font-bold mb-6" style={{ color: COLORS.dark }}>Личный кабинет</h1>
+          
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Профиль */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Профиль</h3>
+              <div className="space-y-2 text-sm">
+                <p><span style={{ color: '#6B7280' }}>Имя:</span> {user?.name}</p>
+                <p><span style={{ color: '#6B7280' }}>Email:</span> {user?.email}</p>
+                <p><span style={{ color: '#6B7280' }}>ИНН:</span> {user?.inn}</p>
+                <p><span style={{ color: '#6B7280' }}>Роль:</span> {user?.role}</p>
+              </div>
+            </div>
+
+            {/* Быстрые действия */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Быстрые действия</h3>
+              <div className="space-y-3">
+                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
+                  📦 Создать заявку на приёмку
+                </button>
+                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
+                  📊 Посмотреть отчёты
+                </button>
+                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
+                  💬 Связаться с менеджером
+                </button>
+              </div>
+            </div>
+
+            {/* Статистика */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Статистика</h3>
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="p-3 rounded-xl" style={{ backgroundColor: COLORS.lightBg }}>
+                  <div className="text-lg font-bold" style={{ color: COLORS.dark }}>12</div>
+                  <div className="text-xs" style={{ color: '#6B7280' }}>Заявок</div>
+                </div>
+                <div className="p-3 rounded-xl" style={{ backgroundColor: COLORS.lightBg }}>
+                  <div className="text-lg font-bold" style={{ color: COLORS.dark }}>5</div>
+                  <div className="text-xs" style={{ color: '#6B7280' }}>В работе</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Разделы по ролям */}
+          <div className="mt-8 grid lg:grid-cols-2 gap-6">
+            {can('view_requests') && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
+                <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заявки</h3>
+                <p className="text-sm" style={{ color: '#6B7280' }}>Список ваших заявок на приёмку и обработку товаров.</p>
+                <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
+                  <p className="text-sm">Заявка #001 - В обработке</p>
+                  <p className="text-xs mt-1" style={{ color: '#6B7280' }}>200 единиц товара, поступление завтра</p>
+                </div>
+              </div>
+            )}
+            
+            {can('view_orders') && (
+              <div className="bg-white rounded-2xl p-6 shadow-sm">
+                <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заказы</h3>
+                <p className="text-sm" style={{ color: '#6B7280' }}>Отправленные заказы и их статусы.</p>
+                <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
+                  <p className="text-sm">Заказ #WB12345 - Доставлен</p>
+                  <p className="text-xs mt-1" style={{ color: '#6B7280' }}>1 единица, доставка на РЦ Новосемейкино</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </Section>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: COLORS.lightBg, color: COLORS.dark }}>
+      <style>{`
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      `}</style>
+
+      {/* Шапка */}
+      <header className="relative">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url(${"/api/placeholder/1600/600"})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.18
+        }} />
+        {/* Градиент без tailwind-скобок/хешей */}
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(to right, rgba(30,27,75,0.92), rgba(30,27,75,0.85))'
+        }} />
+        <Section className="relative flex items-center justify-between py-4">
+          <div className="flex items-center gap-3">
+            <span className="text-xl font-bold text-white">Полка+</span>
+          </div>
+          <nav className="hidden sm:flex gap-6 text-sm font-medium text-white/90">
+            <a href="#services" onClick={() => setActivePage('home')}>Услуги</a>
+            <a href="#pricing" onClick={() => setActivePage('home')}>Тарифы</a>
+            <a href="#calculator" onClick={() => setActivePage('home')}>Калькулятор</a>
+            <a href="#about" onClick={() => setActivePage('home')}>О нас</a>
+            <a href="#contact" onClick={() => setActivePage('home')}>Контакты</a>
+          </nav>
+          <div className="flex items-center gap-2">
+            {!user ? (
+              <>
+                <button onClick={() => setShowLogin(true)} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Войти</button>
+                <button onClick={() => setShowRegister(true)} className="px-3 py-2 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Регистрация</button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => setActivePage('account')} className="px-3 py-2 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Кабинет</button>
+                <button onClick={logout} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Выйти</button>
+              </>
+            )}
+          </div>
+        </Section>
+      </header>
+
+      {/* Модалки авторизации */}
+      <Modal open={showLogin} onClose={() => setShowLogin(false)} title="Вход">
+        <form onSubmit={(e) => handleAuthSubmit('login', e)}>
+          <div className="space-y-4">
+            <input name="email" placeholder="Email или телефон" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            <input name="password" type="password" placeholder="Пароль" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            <button type="submit" className="w-full py-3 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Войти</button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal open={showRegister} onClose={() => setShowRegister(false)} title="Регистрация">
+        <form onSubmit={(e) => handleAuthSubmit('register', e)}>
+          <div className="space-y-4">
+            <input name="name" placeholder="Ваше имя" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            <input name="email" placeholder="Email" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            <div>
+              <input name="inn" placeholder="ИНН компании" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+              {errors.inn && <p className="text-sm text-red-600 mt-1">{errors.inn}</p>}
+            </div>
+            <select name="role" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }}>
+              <option value="Сотрудник">Сотрудник</option>
+              <option value="Менеджер МП">Менеджер МП</option>
+              <option value="Владелец">Владелец</option>
+            </select>
+            <button type="submit" className="w-full py-3 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Зарегистрироваться</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* HERO */}
+      <div className="relative" style={{ backgroundColor: COLORS.dark, color: 'white' }}>
+        <img src="/api/placeholder/1600/800" alt="Команда Полка+" className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover opacity-25" />
+        <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(30,27,75,0.95) 0%, rgba(30,27,75,0.85) 45%, rgba(30,27,75,0.78) 70%, rgba(30,27,75,0.70) 100%)' }} />
+        <Section className="relative py-14 lg:py-20">
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="text-4xl lg:text-5xl font-extrabold">Фулфилмент Полка+ — выгодно, честно, под ключ</h1>
+              <p className="mt-4 text-lg text-neutral-200">Цены ниже рынка на 10–20% • Фото и базовая аналитика включены • Приёмка, маркировка, упаковка, доставка на WB/Ozon/Я.Маркет</p>
+              <div className="mt-6 flex gap-3">
+                <a href="#calculator" className="px-5 py-3 rounded-2xl font-semibold shadow" style={{ backgroundColor: 'white', color: COLORS.dark }} onClick={() => setActivePage('home')}>Рассчитать тариф</a>
+                <a href="#contact" className="px-5 py-3 rounded-2xl font-semibold ring-2" style={{ borderColor: 'white' }} onClick={() => setActivePage('home')}>Оставить заявку</a>
+              </div>
+              <ul className="mt-6 space-y-2 text-sm text-neutral-200">
+                {['Приёмка и проверка на брак','Адресное хранение: первые 3 дня бесплатно','Доставка до Новосемейкино и федеральных РЦ'].map(t => (
+                  <li key={t} className="flex items-start gap-2"><CheckIcon/> <span>{t}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div className="lg:justify-self-end">
+              <div className="rounded-3xl p-6 shadow-lg" style={{ backgroundColor: COLORS.purple }}>
+                <p className="text-sm text-neutral-200">Наше УТП</p>
+                <p className="text-xl font-semibold">Гарантируем приёмку 99,5% поставок и фиксируем цены в договоре</p>
+                <p className="mt-2 text-neutral-100">Персональный менеджер 24/7, прозрачные отчёты, интеграция с маркетплейсами.</p>
+              </div>
+            </div>
+          </div>
+        </Section>
+      </div>
+
+      {/* Услуги */}
+      <Section id="services" className="py-20">
+        <div className="grid lg:grid-cols-3 gap-12 items-start">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-extrabold leading-tight" style={{ color: COLORS.dark }}>Мы поможем вам<br/>повысить эффективность<br/>вашего бизнеса</h2>
+            <p className="mt-5 text-base" style={{ color: '#4B5563' }}>Полная поддержка на каждом этапе — от приёмки до доставки на любой склад.</p>
+          </div>
+          <div className="lg:col-span-2 grid sm:grid-cols-2 gap-10">
+            {[
+              { icon: Building2, title: 'Приём товара в ТК', desc: 'Принимаем товары из любых ТК, проверяем состояние груза.' },
+              { icon: ClipboardList, title: 'Создаём поставку', desc: 'Снижаем риск разворотов. Создание поставки с гарантией приёмки.' },
+              { icon: ScanBarcode, title: 'Маркировка', desc: 'Этикетки под требования маркетплейсов. «Честный знак».' },
+              { icon: ShoppingBag, title: 'Упаковка', desc: 'БОПП / Zip‑Lock, наборы, вкладыши, переклейка ШК.' },
+              { icon: Truck, title: 'Доставка', desc: 'Собственный транспорт. Новосемейкино и федеральные РЦ.' },
+              { icon: Home, title: 'Хранение', desc: 'Адресное хранение, CCTV. Первые 3 дня — бесплатно.' },
+            ].map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex gap-4">
+                <div className="shrink-0 mt-1"><div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${COLORS.pink}1A`, color: COLORS.pink }}><Icon className="w-7 h-7" /></div></div>
+                <div><h3 className="text-lg font-semibold" style={{ color: COLORS.dark }}>{title}</h3><p className="mt-1 text-sm" style={{ color: '#4B5563' }}>{desc}</p></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Бренды (бегущая строка без файлов) */}
+      <div className="py-6" style={{ backgroundColor: 'black', color: 'white' }}>
+        <div className="overflow-hidden">
+          <div className="flex items-center" style={{ width: '200%', animation: 'marquee 18s linear infinite' }}>
+            {BRANDS.concat(BRANDS).map((name, i) => (
+              <span key={i} className="mx-12 text-lg font-semibold whitespace-nowrap">{name}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Тарифы */}
+      <Section id="pricing" className="py-8">
+        <div className="p-6 rounded-3xl shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.dark }}>Тарифы</h2>
+          <div className="overflow-x-auto mt-6">
+            <table className="w-full text-left text-sm">
+              <thead><tr style={{ backgroundColor: '#F3F4F6' }}><th className="p-3 rounded-l-xl">Услуга</th><th className="p-3">Конкуренты</th><th className="p-3 rounded-r-xl">Полка+</th></tr></thead>
+              <tbody>
+                <tr className="border-t" style={{ borderColor: '#E5E7EB' }}><td className="p-3">Забор (город)</td><td className="p-3">≈1000 ₽/паллет; 100 ₽/короб</td><td className="p-3">{money(PRICES.pickup.pallet)} / паллет; {money(PRICES.pickup.box)} / короб; от 10 паллет — {money(PRICES.pickup.palletBulk)}</td></tr>
+                <tr className="border-t" style={{ borderColor: '#E5E7EB' }}><td className="p-3">Пересчёт + брак</td><td className="p-3">≈2 ₽/шт.</td><td className="p-3">до 1000 — {money(PRICES.count.upTo1000)}/шт.; 1000+ — {money(PRICES.count.over1000)}/шт.</td></tr>
+                <tr className="border-t" style={{ borderColor: '#E5E7EB' }}><td className="p-3">Маркировка</td><td className="p-3">5–12 ₽/шт.</td><td className="p-3">до 100 — {money(PRICES.mark.lt100)}/шт.; 100–500 — {money(PRICES.mark.lt500)}/шт.; 500+ — {money(PRICES.mark.gte500)}/шт.</td></tr>
+                <tr className="border-t" style={{ borderColor: '#E5E7EB' }}><td className="p-3">Упаковка</td><td className="p-3">10–17 ₽/шт.</td><td className="p-3">БОПП малый {money(PRICES.pack.boppSmall)}, большой {money(PRICES.pack.boppLarge)}; Zip‑Lock малый {money(PRICES.pack.zipSmall)}, большой {money(PRICES.pack.zipLarge)}; комплектация {money(PRICES.pack.bundle)}/шт.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </Section>
+
+      {/* Калькулятор */}
+      <Section id="calculator" className="py-16">
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
+          <div className="p-6 rounded-3xl shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+            <h3 className="text-xl font-bold" style={{ color: COLORS.dark }}>Калькулятор</h3>
+            <div className="grid sm:grid-cols-2 gap-4 mt-6">
+              {[{k:'palletsPickup',label:'Паллет на забор'},{k:'boxesPickup',label:'Коробок на забор'},{k:'unitsCount',label:'Единиц на пересчёт',},{k:'unitsMark',label:'Единиц на маркировку/упаковку'},{k:'bundles',label:'Комплектация (шт)'},{k:'storageBoxes',label:'Коробов на хранение'},{k:'storagePallets',label:'Паллет на хранение'},{k:'storageDays',label:'Дней хранения'},{k:'cubesDelivery',label:'Кубов на доставку'},{k:'extraBoxesDelivery',label:'Доп. коробов (доставка)'},{k:'palletsDelivery',label:'Паллет на доставку'},{k:'photoSkus',label:'SKU на фото'},{k:'spins',label:'SKU 360°'},{k:'videos',label:'Видео (шт)'},{k:'shipments',label:'Создание поставок (шт)'},{k:'honestSignUnits',label:'Честный знак (шт)'}].map(i=> (
+                <label key={i.k} className="text-sm"><span className="block mb-1" style={{ color: '#4B5563' }}>{i.label}</span><input type="number" min={0} value={input[i.k]} onChange={handle(i.k)} className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} /></label>
+              ))}
+              <label className="text-sm"><span className="block mb-1" style={{ color: '#4B5563' }}>Тип упаковки</span><select value={input.packType} onChange={handle('packType')} className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }}><option value="boppSmall">БОПП малый</option><option value="boppLarge">БОПП большой</option><option value="zipSmall">Zip‑Lock малый</option><option value="zipLarge">Zip‑Lock большой</option></select></label>
+            </div>
+          </div>
+
+          <div className="p-6 rounded-3xl shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+            <h3 className="text-xl font-bold" style={{ color: COLORS.dark }}>Итог расчёта</h3>
+            <div className="mt-4 space-y-2 text-sm">
+              <div className="flex justify-between"><span>Забор</span><span className="font-semibold">{money(total.pickup)}</span></div>
+              <div className="flex justify-between"><span>Пересчёт/брак</span><span className="font-semibold">{money(total.count)}</span></div>
+              <div className="flex justify-between"><span>Маркировка</span><span className="font-semibold">{money(total.mark)}</span></div>
+              <div className="flex justify-between"><span>Упаковка</span><span className="font-semibold">{money(total.pack)}</span></div>
+              <div className="flex justify-between"><span>Хранение</span><span className="font-semibold">{money(total.storage)}</span></div>
+              <div className="flex justify-between"><span>Доставка</span><span className="font-semibold">{money(total.delivery)}</span></div>
+              <div className="flex justify-between"><span>Контент</span><span className="font-semibold">{money(total.photo)}</span></div>
+              <div className="flex justify-between"><span>Доп. услуги</span><span className="font-semibold">{money(total.extras)}</span></div>
+              <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold" style={{ borderColor: '#E5E7EB' }}><span>Итого</span><span>{money(total.sum)}</span></div>
+            </div>
+            <a href="#contact" className="mt-6 inline-block px-5 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }} onClick={() => setActivePage('home')}>Оставить заявку</a>
+          </div>
+        </div>
+      </Section>
+
+      {/* О компании */}
+      <Section id="about" className="py-16">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.dark }}>О компании</h2>
+            <p className="mt-3" style={{ color: '#374151' }}>Мы — самарский фулфилмент‑центр Полка+. Помогаем селлерам Wildberries, Ozon, Яндекс.Маркет расти быстрее: берём на себя рутину и снижаем логистические косты. Работаем по FBO/FBS, кросс‑док, интеграция с РЦ, персональный менеджер 24/7.</p>
+            <ul className="mt-4 space-y-2 text-sm" style={{ color: '#374151' }}>
+              <li className="flex items-start gap-2"><CheckIcon/>Гарантия приёмки 99,5% поставок</li>
+              <li className="flex items-start gap-2"><CheckIcon/>Склад класса А, видеонаблюдение, адресное хранение</li>
+              <li className="flex items-start gap-2"><CheckIcon/>Первые 3 дня хранения — бесплатно</li>
+            </ul>
+          </div>
+          <div className="rounded-3xl p-6 shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+            <div className="grid grid-cols-2 gap-4 text-center">
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: COLORS.lightBg }}>
+                <div className="text-2xl font-extrabold" style={{ color: COLORS.dark }}>10–20%</div>
+                <div className="text-xs mt-1" style={{ color: '#6B7280' }}>экономия к рынку</div>
+              </div>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: COLORS.lightBg }}>
+                <div className="text-2xl font-extrabold" style={{ color: COLORS.dark }}>24/7</div>
+                <div className="text-xs mt-1" style={{ color: '#6B7280' }}>поддержка</div>
+              </div>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: COLORS.lightBg }}>
+                <div className="text-2xl font-extrabold" style={{ color: COLORS.dark }}>3 дня</div>
+                <div className="text-xs mt-1" style={{ color: '#6B7280' }}>хранение бесплатно</div>
+              </div>
+              <div className="p-4 rounded-2xl" style={{ backgroundColor: COLORS.lightBg }}>
+                <div className="text-2xl font-extrabold" style={{ color: COLORS.dark }}>99,5%</div>
+                <div className="text-xs mt-1" style={{ color: '#6B7280' }}>приёмка поставок</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Контакты */}
+      <div id="contact" style={{ backgroundColor: COLORS.dark, color: 'white' }}>
+        <Section className="py-16">
+          <h2 className="text-2xl md:text-3xl font-bold">Связаться с нами</h2>
+          <p className="mt-2 text-neutral-300">Оставьте заявку — вышлем персональные условия и договор.</p>
+          <form className="mt-8 grid sm:grid-cols-2 gap-4">
+            <input placeholder="Имя" className="rounded-xl px-4 py-3 text-neutral-900" />
+            <input placeholder="Телефон или Telegram" className="rounded-xl px-4 py-3 text-neutral-900" />
+            <input placeholder="E‑mail (необязательно)" className="rounded-xl px-4 py-3 text-neutral-900 sm:col-span-2" />
+            <textarea placeholder="Кратко опишите объёмы и задачи" className="rounded-xl px-4 py-3 text-neutral-900 sm:col-span-2" rows={4} />
+            <button type="button" className="sm:col-span-2 mt-2 px-5 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Отправить</button>
+          </form>
+        </Section>
+      </div>
+
+      <footer className="py-8 text-center text-sm" style={{ color: '#6B7280' }}>© {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.</footer>
+    </div>
+  );
+}
