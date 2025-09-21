@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send } from "lucide-react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail } from "lucide-react";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -804,21 +804,56 @@ export default function Index() {
 
       {/* Плавающие кнопки */}
       <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-        {/* Кнопка Telegram */}
-        <button
-          onClick={() => alert('Переход в Telegram канал (пока заглушка)')}
-          className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
-          style={{ backgroundColor: '#0088cc' }}
-          aria-label="Telegram канал"
-        >
-          <Send className="w-6 h-6 text-white" />
-          
-          {/* Tooltip */}
-          <div className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            Наш Telegram канал
-            <div className="absolute top-1/2 -translate-y-1/2 left-full w-2 h-2 bg-gray-900 rotate-45"></div>
-          </div>
-        </button>
+        {/* Мессенджеры */}
+        <div className="flex flex-col gap-2">
+          {/* ВКонтакте */}
+          <button
+            onClick={() => alert('Переход в ВК (пока заглушка)')}
+            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+            style={{ backgroundColor: '#0077FF' }}
+            aria-label="ВКонтакте"
+          >
+            <MessageCircle className="w-5 h-5 text-white" />
+            
+            {/* Tooltip */}
+            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              ВКонтакте
+              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
+            </div>
+          </button>
+
+          {/* Telegram */}
+          <button
+            onClick={() => alert('Переход в Telegram (пока заглушка)')}
+            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+            style={{ backgroundColor: '#0088cc' }}
+            aria-label="Telegram"
+          >
+            <Send className="w-5 h-5 text-white" />
+            
+            {/* Tooltip */}
+            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              Telegram
+              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
+            </div>
+          </button>
+
+          {/* MAX */}
+          <button
+            onClick={() => alert('Переход в MAX (пока заглушка)')}
+            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+            style={{ backgroundColor: '#00C853' }}
+            aria-label="MAX"
+          >
+            <Mail className="w-5 h-5 text-white" />
+            
+            {/* Tooltip */}
+            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              MAX
+              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
+            </div>
+          </button>
+        </div>
 
         {/* Кнопка "Наверх" */}
         {showScrollTop && (
