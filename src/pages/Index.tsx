@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2 } from "lucide-react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send } from "lucide-react";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -802,17 +802,36 @@ export default function Index() {
         © {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.
       </footer>
 
-      {/* Кнопка "Наверх" */}
-      {showScrollTop && (
+      {/* Плавающие кнопки */}
+      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+        {/* Кнопка Telegram */}
         <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-50"
-          style={{ backgroundColor: COLORS.pink, color: 'white' }}
-          aria-label="Наверх"
+          onClick={() => alert('Переход в Telegram канал (пока заглушка)')}
+          className="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+          style={{ backgroundColor: '#0088cc' }}
+          aria-label="Telegram канал"
         >
-          <ChevronUp className="w-6 h-6" />
+          <Send className="w-6 h-6 text-white" />
+          
+          {/* Tooltip */}
+          <div className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Наш Telegram канал
+            <div className="absolute top-1/2 -translate-y-1/2 left-full w-2 h-2 bg-gray-900 rotate-45"></div>
+          </div>
         </button>
-      )}
+
+        {/* Кнопка "Наверх" */}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
+            style={{ backgroundColor: COLORS.pink, color: 'white' }}
+            aria-label="Наверх"
+          >
+            <ChevronUp className="w-5 h-5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }
