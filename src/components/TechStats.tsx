@@ -30,7 +30,7 @@ export const TechStats = ({ isOpen, onClose }: TechStatsProps) => {
   const stats = [
     {
       icon: Activity,
-      label: "Uptime",
+      label: "Время работы",
       value: uptime.toFixed(2),
       suffix: "%",
       color: "text-accent-green",
@@ -76,7 +76,7 @@ export const TechStats = ({ isOpen, onClose }: TechStatsProps) => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-              <TechBadge className="text-sm font-mono">Live Stats</TechBadge>
+              <TechBadge className="text-sm font-mono">Статистика в реальном времени</TechBadge>
             </div>
             <button
               onClick={onClose}
