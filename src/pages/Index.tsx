@@ -217,6 +217,7 @@ export default function Index() {
             <a href="#services" onClick={() => setActivePage('home')}>Услуги</a>
             <a href="#pricing" onClick={() => setActivePage('home')}>Тарифы</a>
             <a href="#calculator" onClick={() => setActivePage('home')}>Калькулятор</a>
+            <a href="#blog" onClick={() => setActivePage('home')}>Блог</a>
             <a href="#about" onClick={() => setActivePage('home')}>О нас</a>
             <a href="#contact" onClick={() => setActivePage('home')}>Контакты</a>
           </nav>
@@ -377,6 +378,66 @@ export default function Index() {
               <div className="border-t pt-3 mt-3 flex justify-between text-lg font-bold" style={{ borderColor: '#E5E7EB' }}><span>Итого</span><span>{money(total.sum)}</span></div>
             </div>
             <a href="#contact" className="mt-6 inline-block px-5 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }} onClick={() => setActivePage('home')}>Оставить заявку</a>
+          </div>
+        </div>
+      </Section>
+
+      {/* Блог/FAQ */}
+      <Section id="blog" className="py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.dark }}>Блог и частые вопросы</h2>
+          <p className="mt-3 text-lg" style={{ color: '#6B7280' }}>Отвечаем на популярные вопросы о фулфилменте</p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {[
+            {
+              q: 'Сколько стоит фулфилмент для начинающих селлеров?',
+              a: 'Для малых объёмов (до 1000 единиц в месяц) стоимость составит примерно 15-20 ₽ за единицу с учётом всех услуг. Первые 3 дня хранения бесплатно, что снижает общие затраты.'
+            },
+            {
+              q: 'Как происходит приёмка товара?',
+              a: 'Мы принимаем товар из любых транспортных компаний, проверяем количество и состояние. Гарантируем приёмку 99,5% поставок. При обнаружении брака сразу уведомляем клиента.'
+            },
+            {
+              q: 'Работаете ли вы с «Честным знаком»?',
+              a: 'Да, оказываем услуги маркировки товаров по системе «Честный знак». Стоимость — 2 ₽ за единицу. Полностью соблюдаем требования законодательства.'
+            },
+            {
+              q: 'Какие маркетплейсы поддерживаете?',
+              a: 'Работаем с Wildberries, Ozon, Яндекс.Маркет, Lamoda, Avito. Знаем специфику каждой площадки и требования к упаковке и маркировке.'
+            },
+            {
+              q: 'Как быстро обрабатываете заказы?',
+              a: 'Стандартное время обработки — 1-2 рабочих дня. При срочной необходимости можем обработать в день поступления. Отгружаем ежедневно кроме воскресенья.'
+            },
+            {
+              q: 'Предоставляете ли отчётность?',
+              a: 'Да, ведём подробную отчётность по всем операциям. Персональный менеджер предоставляет еженедельные отчёты и доступ к системе отслеживания в режиме 24/7.'
+            },
+            {
+              q: 'Есть ли минимальный объём для работы?',
+              a: 'Минимального объёма нет. Работаем как с крупными, так и с начинающими селлерами. Тарифы рассчитываются индивидуально в зависимости от объёмов.'
+            },
+            {
+              q: 'Как происходит доставка на склады МП?',
+              a: 'Используем собственный транспорт для доставки в Новосемейкино и федеральные распределительные центры. Стоимость доставки — 400 ₽ за кубометр.'
+            }
+          ].map(({ q, a }, index) => (
+            <div key={index} className="p-6 rounded-2xl shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+              <h3 className="text-lg font-semibold mb-3" style={{ color: COLORS.dark }}>{q}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: '#4B5563' }}>{a}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <div className="p-6 rounded-2xl" style={{ backgroundColor: `${COLORS.pink}0D` }}>
+            <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.dark }}>Не нашли ответ на свой вопрос?</h3>
+            <p className="mb-4" style={{ color: '#6B7280' }}>Свяжитесь с нами, и наш менеджер ответит в течение 15 минут</p>
+            <a href="#contact" className="inline-block px-6 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }} onClick={() => setActivePage('home')}>
+              Задать вопрос
+            </a>
           </div>
         </div>
       </Section>
