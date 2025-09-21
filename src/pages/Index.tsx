@@ -1,5 +1,8 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail } from "lucide-react";
+import { TechStats } from "@/components/TechStats";
+import { ParticleBackground } from "@/components/ParticleBackground";
+import { GlowingOrb } from "@/components/GlowingOrb";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -329,7 +332,9 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.lightBg, color: COLORS.dark }}>
+    <div className="min-h-screen bg-gradient-to-br from-background via-surface-light to-background relative overflow-hidden">
+      {/* Particle Background */}
+      <ParticleBackground />
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -801,6 +806,9 @@ export default function Index() {
       <footer className="py-8 text-center text-sm" style={{ color: '#6B7280' }}>
         © {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.
       </footer>
+
+      {/* Техно-статистика */}
+      <TechStats />
 
       {/* Плавающие кнопки */}
       <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
