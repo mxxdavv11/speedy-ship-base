@@ -3,7 +3,7 @@ import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield
 import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { GlowingOrb } from "@/components/GlowingOrb";
-import { FloatingMessengers } from "@/components/FloatingMessengers";
+
 import { StatsButton } from "@/components/StatsButton";
 import { FinanceDashboard } from "@/components/FinanceDashboard";
 import { OrdersDashboard } from "@/components/OrdersDashboard";
@@ -1020,8 +1020,6 @@ export default function Index() {
           isActive={showStats}
         />
         
-        {/* Мессенджеры */}
-        <FloatingMessengers />
       </div>
 
         {/* Кнопка "Наверх" */}
