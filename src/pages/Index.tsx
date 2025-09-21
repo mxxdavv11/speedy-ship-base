@@ -1,11 +1,15 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail } from "lucide-react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail, Package } from "lucide-react";
 import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { GlowingOrb } from "@/components/GlowingOrb";
 import { FloatingMessengers } from "@/components/FloatingMessengers";
 import { StatsButton } from "@/components/StatsButton";
+import { FinanceDashboard } from "@/components/FinanceDashboard";
+import { OrdersDashboard } from "@/components/OrdersDashboard";
 import { ForgotPasswordModal } from "@/components/ForgotPasswordModal";
+import { ModernCard } from "@/components/ModernCard";
+import { TechBadge } from "@/components/TechBadge";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -62,6 +66,7 @@ export default function Index() {
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'finance', 'orders', 'surveillance'
   const [errors, setErrors] = useState({ inn: '' });
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -159,178 +164,264 @@ export default function Index() {
           </Section>
         </header>
 
-        {/* Кабинет */}
+        {/* Кабинет с современными дашбордами */}
         <Section className="py-8">
-          <h1 className="text-2xl font-bold mb-6" style={{ color: COLORS.dark }}>Личный кабинет</h1>
-          
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* Профиль */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Профиль</h3>
-              <div className="space-y-2 text-sm">
-                <p><span style={{ color: '#6B7280' }}>Имя:</span> {user?.name}</p>
-                <p><span style={{ color: '#6B7280' }}>Email:</span> {user?.email}</p>
-                <p><span style={{ color: '#6B7280' }}>ИНН:</span> {user?.inn}</p>
-                <p><span style={{ color: '#6B7280' }}>Роль:</span> {user?.role}</p>
-              </div>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                Добро пожаловать, {user?.name}
+              </h1>
+              <p className="text-muted-foreground mt-1">Роль: {user?.role}</p>
             </div>
-
-            {/* Быстрые действия */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Быстрые действия</h3>
-              <div className="space-y-3">
-                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
-                  📦 Создать заявку на приёмку
-                </button>
-                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
-                  📊 Посмотреть отчёты
-                </button>
-                <button className="w-full p-3 rounded-xl border text-left text-sm hover:bg-gray-50" style={{ borderColor: '#E5E7EB' }}>
-                  💬 Связаться с менеджером
-                </button>
-              </div>
-            </div>
-
-            {/* Статистика */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Статистика</h3>
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div className="p-3 rounded-xl" style={{ backgroundColor: COLORS.lightBg }}>
-                  <div className="text-lg font-bold" style={{ color: COLORS.dark }}>12</div>
-                  <div className="text-xs" style={{ color: '#6B7280' }}>Заявок</div>
-                </div>
-                <div className="p-3 rounded-xl" style={{ backgroundColor: COLORS.lightBg }}>
-                  <div className="text-lg font-bold" style={{ color: COLORS.dark }}>5</div>
-                  <div className="text-xs" style={{ color: '#6B7280' }}>В работе</div>
-                </div>
-              </div>
+            <div className="flex items-center gap-4">
+              <TechBadge variant="accent">{user?.role}</TechBadge>
             </div>
           </div>
+          
+          {/* Навигация по разделам */}
+          <div className="flex gap-2 mb-8 p-1 bg-surface-light rounded-xl">
+            {[
+              { id: 'dashboard', label: 'Обзор', icon: '📊' },
+              { id: 'finance', label: 'Финансы', icon: '💰' },
+              { id: 'orders', label: 'Заказы', icon: '📦' },
+              { id: 'surveillance', label: 'Видеонаблюдение', icon: '📹' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-white shadow-card text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-          {/* Разделы по ролям */}
-          <div className="mt-8 space-y-6">
-            {/* Видеонаблюдение - доступно всем ролям */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <Camera className="w-5 h-5" style={{ color: COLORS.pink }} />
-                <h3 className="font-semibold" style={{ color: COLORS.dark }}>Видеонаблюдение складов</h3>
-              </div>
-              <p className="text-sm mb-6" style={{ color: '#6B7280' }}>Онлайн-мониторинг ваших товаров на складских стеллажах</p>
-              
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { id: 'A1', name: 'Стеллаж A-1', status: 'online' },
-                  { id: 'A2', name: 'Стеллаж A-2', status: 'online' },
-                  { id: 'B1', name: 'Стеллаж B-1', status: 'offline' },
-                  { id: 'B2', name: 'Стеллаж B-2', status: 'online' }
-                ].map((camera) => (
-                  <div key={camera.id} className="relative group">
-                    <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden relative">
-                      {/* Имитация видеопотока */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900">
-                        <div className="absolute inset-0 opacity-30">
-                          <div className="grid grid-cols-8 grid-rows-6 h-full">
-                            {Array.from({ length: 48 }).map((_, i) => (
-                              <div key={i} className="border border-gray-600/20"></div>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        {/* Статус камеры */}
-                        <div className="absolute top-2 left-2">
-                          <div className={`w-2 h-2 rounded-full ${camera.status === 'online' ? 'bg-green-400' : 'bg-red-400'}`}></div>
-                        </div>
-                        
-                        {/* Название камеры */}
-                        <div className="absolute top-2 right-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
-                          {camera.id}
-                        </div>
-                        
-                        {/* Время */}
-                        <div className="absolute bottom-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
-                          {new Date().toLocaleTimeString('ru-RU')}
-                        </div>
-                        
-                        {camera.status === 'online' ? (
-                          <>
-                            {/* Имитация движения товаров */}
-                            <div className="absolute top-1/2 left-1/3 w-4 h-6 bg-blue-400/60 rounded-sm animate-pulse"></div>
-                            <div className="absolute top-2/3 right-1/4 w-6 h-4 bg-yellow-400/60 rounded-sm"></div>
-                            
-                            {/* Кнопки управления при наведении */}
-                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                              <button className="p-2 bg-white/20 rounded-full text-white hover:bg-white/30">
-                                <Play className="w-4 h-4" />
-                              </button>
-                              <button className="p-2 bg-white/20 rounded-full text-white hover:bg-white/30">
-                                <Maximize2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </>
-                        ) : (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="text-white text-xs text-center">
-                              <Camera className="w-6 h-6 mx-auto mb-1 opacity-50" />
-                              <div>Нет сигнала</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+          {/* Содержимое вкладок */}
+          {activeTab === 'dashboard' && (
+            <div className="space-y-6">
+              {/* Краткий обзор */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <ModernCard className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Активных заказов</p>
+                      <p className="text-3xl font-bold mt-1">142</p>
                     </div>
-                    
-                    <div className="mt-2 text-center">
-                      <div className="text-sm font-medium" style={{ color: COLORS.dark }}>{camera.name}</div>
-                      <div className={`text-xs ${camera.status === 'online' ? 'text-green-600' : 'text-red-600'}`}>
-                        {camera.status === 'online' ? 'В сети' : 'Офлайн'}
-                      </div>
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Package className="w-6 h-6 text-primary" />
                     </div>
                   </div>
-                ))}
-              </div>
-              
-              <div className="mt-6 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' }}>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span style={{ color: '#4B5563' }}>3 камеры онлайн</span>
+                </ModernCard>
+                
+                <ModernCard className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Доход за месяц</p>
+                      <p className="text-3xl font-bold mt-1">₽2.4M</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                      <span style={{ color: '#4B5563' }}>1 камера офлайн</span>
+                    <div className="w-12 h-12 bg-accent-green/10 rounded-xl flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-accent-green" />
                     </div>
                   </div>
-                  <button className="text-sm font-medium hover:underline" style={{ color: COLORS.pink }}>
-                    Все камеры →
+                </ModernCard>
+                
+                <ModernCard className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Камер онлайн</p>
+                      <p className="text-3xl font-bold mt-1">3/4</p>
+                    </div>
+                    <div className="w-12 h-12 bg-primary-violet/10 rounded-xl flex items-center justify-center">
+                      <Camera className="w-6 h-6 text-primary-violet" />
+                    </div>
+                  </div>
+                </ModernCard>
+              </div>
+              
+              {/* Быстрые действия */}
+              <ModernCard glass className="p-6">
+                <h3 className="text-xl font-semibold mb-4">Быстрые действия</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <button className="p-4 text-left rounded-xl border border-border hover:border-primary/50 hover:bg-surface-light/50 transition-all">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <ClipboardList className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Создать заявку</p>
+                        <p className="text-sm text-muted-foreground">Новая заявка на приёмку</p>
+                      </div>
+                    </div>
+                  </button>
+                  
+                  <button className="p-4 text-left rounded-xl border border-border hover:border-primary/50 hover:bg-surface-light/50 transition-all">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-accent-green/10 rounded-lg flex items-center justify-center">
+                        <Users className="w-5 h-5 text-accent-green" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Связаться с менеджером</p>
+                        <p className="text-sm text-muted-foreground">Получить поддержку</p>
+                      </div>
+                    </div>
+                  </button>
+                  
+                  <button 
+                    onClick={() => setActiveTab('orders')}
+                    className="p-4 text-left rounded-xl border border-border hover:border-primary/50 hover:bg-surface-light/50 transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary-violet/10 rounded-lg flex items-center justify-center">
+                        <Truck className="w-5 h-5 text-primary-violet" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Отследить заказы</p>
+                        <p className="text-sm text-muted-foreground">Статус доставки</p>
+                      </div>
+                    </div>
                   </button>
                 </div>
-              </div>
+              </ModernCard>
             </div>
+          )}
 
-            <div className="grid lg:grid-cols-2 gap-6">
-              {can('view_requests') && (
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заявки</h3>
-                  <p className="text-sm" style={{ color: '#6B7280' }}>Список ваших заявок на приёмку и обработку товаров.</p>
-                  <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
-                    <p className="text-sm">Заявка #001 - В обработке</p>
-                    <p className="text-xs mt-1" style={{ color: '#6B7280' }}>200 единиц товара, поступление завтра</p>
-                  </div>
+          {/* Дашборд финансов */}
+          {activeTab === 'finance' && (user?.role === 'Владелец' || user?.role === 'Менеджер') && (
+            <FinanceDashboard userRole={user?.role} />
+          )}
+
+          {/* Дашборд заказов */}
+          {activeTab === 'orders' && (
+            <OrdersDashboard userRole={user?.role} />
+          )}
+          {/* Видеонаблюдение */}
+          {activeTab === 'surveillance' && (
+            <div className="space-y-6">
+              <ModernCard glass className="p-6">
+                <div className="flex items-center gap-2 mb-6">
+                  <Camera className="w-6 h-6 text-primary" />
+                  <h3 className="text-2xl font-semibold">Видеонаблюдение складов</h3>
                 </div>
-              )}
-              
-              {can('view_orders') && (
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заказы</h3>
-                  <p className="text-sm" style={{ color: '#6B7280' }}>Отправленные заказы и их статусы.</p>
-                  <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
-                    <p className="text-sm">Заказ #WB12345 - Доставлен</p>
-                    <p className="text-xs mt-1" style={{ color: '#6B7280' }}>1 единица, доставка на РЦ Новосемейкино</p>
-                  </div>
+                <p className="text-muted-foreground mb-6">Онлайн-мониторинг ваших товаров на складских стеллажах</p>
+                
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    { id: 'A1', name: 'Стеллаж A-1', status: 'online' },
+                    { id: 'A2', name: 'Стеллаж A-2', status: 'online' },
+                    { id: 'B1', name: 'Стеллаж B-1', status: 'offline' },
+                    { id: 'B2', name: 'Стеллаж B-2', status: 'online' }
+                  ].map((camera) => (
+                    <div key={camera.id} className="group">
+                      <ModernCard className="overflow-hidden hover:shadow-glow transition-all">
+                        <div className="aspect-video bg-gray-900 relative">
+                          {/* Имитация видеопотока */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900">
+                            <div className="absolute inset-0 opacity-20">
+                              <div className="grid grid-cols-8 grid-rows-6 h-full">
+                                {Array.from({ length: 48 }).map((_, i) => (
+                                  <div key={i} className="border border-gray-600/20"></div>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            {/* Статус камеры */}
+                            <div className="absolute top-3 left-3">
+                              <div className={`w-3 h-3 rounded-full ${camera.status === 'online' ? 'bg-accent-green animate-pulse' : 'bg-red-500'}`}></div>
+                            </div>
+                            
+                            {/* Название камеры */}
+                            <div className="absolute top-3 right-3 glass-card px-3 py-1 rounded-full">
+                              <span className="text-white text-xs font-mono">{camera.id}</span>
+                            </div>
+                            
+                            {/* Время */}
+                            <div className="absolute bottom-3 left-3 glass-card px-3 py-1 rounded-full">
+                              <span className="text-white text-xs font-mono">
+                                {new Date().toLocaleTimeString('ru-RU')}
+                              </span>
+                            </div>
+                            
+                            {camera.status === 'online' ? (
+                              <>
+                                {/* Имитация движения товаров */}
+                                <div className="absolute top-1/2 left-1/3 w-6 h-8 bg-primary-blue/60 rounded-sm animate-pulse"></div>
+                                <div className="absolute top-2/3 right-1/4 w-8 h-6 bg-accent-orange/60 rounded-sm floating"></div>
+                                
+                                {/* Кнопки управления при наведении */}
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-3">
+                                  <button className="p-3 glass-card rounded-full text-white hover:bg-white/20 transition-all">
+                                    <Play className="w-5 h-5" />
+                                  </button>
+                                  <button className="p-3 glass-card rounded-full text-white hover:bg-white/20 transition-all">
+                                    <Maximize2 className="w-5 h-5" />
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-white text-center">
+                                  <Camera className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                                  <div className="text-sm">Нет сигнала</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-medium">{camera.name}</p>
+                              <p className={`text-sm ${camera.status === 'online' ? 'text-accent-green' : 'text-red-500'}`}>
+                                {camera.status === 'online' ? 'В сети' : 'Офлайн'}
+                              </p>
+                            </div>
+                            <TechBadge variant={camera.status === 'online' ? 'default' : 'accent'} className="text-xs">
+                              {camera.status === 'online' ? 'Live' : 'Offline'}
+                            </TechBadge>
+                          </div>
+                        </div>
+                      </ModernCard>
+                    </div>
+                  ))}
                 </div>
-              )}
+                
+                <ModernCard className="p-6 mt-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse"></div>
+                        <span className="text-sm font-medium">3 камеры онлайн</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span className="text-sm font-medium">1 камера офлайн</span>
+                      </div>
+                    </div>
+                    <button className="text-primary hover:text-primary/80 text-sm font-medium transition-colors">
+                      Полноэкранный режим →
+                    </button>
+                  </div>
+                </ModernCard>
+              </ModernCard>
             </div>
-          </div>
+          )}
+
+          {/* Если нет доступа */}
+          {activeTab === 'finance' && user?.role !== 'Владелец' && user?.role !== 'Менеджер' && (
+            <ModernCard className="p-8 text-center">
+              <Shield className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Доступ ограничен</h3>
+              <p className="text-muted-foreground">
+                Финансовые данные доступны только владельцам и менеджерам
+              </p>
+            </ModernCard>
+          )}
         </Section>
       </div>
     );
