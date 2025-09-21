@@ -613,16 +613,6 @@ export default function Index() {
         </div>
       </Section>
 
-      {/* Бренды (бегущая строка без файлов) */}
-      <div className="py-6" style={{ backgroundColor: 'black', color: 'white' }}>
-        <div className="overflow-hidden">
-          <div className="flex items-center" style={{ width: '200%', animation: 'marquee 18s linear infinite' }}>
-            {BRANDS.concat(BRANDS).map((name, i) => (
-              <span key={i} className="mx-12 text-lg font-semibold whitespace-nowrap">{name}</span>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Статистика */}
       <Section className="py-16">
