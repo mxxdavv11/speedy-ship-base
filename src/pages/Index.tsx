@@ -7,9 +7,12 @@ import { FloatingMessengers } from "@/components/FloatingMessengers";
 import { StatsButton } from "@/components/StatsButton";
 import { FinanceDashboard } from "@/components/FinanceDashboard";
 import { OrdersDashboard } from "@/components/OrdersDashboard";
+import { User } from "@/types/user";
 import { ForgotPasswordModal } from "@/components/ForgotPasswordModal";
 import { ModernCard } from "@/components/ModernCard";
 import { TechBadge } from "@/components/TechBadge";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -61,7 +64,7 @@ function Modal({ open, onClose, children, title }) {
 
 export default function Index() {
   const [activePage, setActivePage] = useState('home'); // 'home' | 'account'
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -465,45 +468,25 @@ export default function Index() {
         })
       }} />
 
-      {/* Шапка */}
-      <header className="relative">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url(${"/api/placeholder/1600/600"})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.18
-        }} />
-        {/* Градиент без tailwind-скобок/хешей */}
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to right, rgba(30,27,75,0.92), rgba(30,27,75,0.85))'
-        }} />
-        <Section className="relative flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <span className="text-xl font-bold text-white">Полка+</span>
-          </div>
-          <nav className="hidden sm:flex gap-6 text-sm font-medium text-white/90">
-            <a href="#services" onClick={() => setActivePage('home')}>Услуги</a>
-            <a href="#pricing" onClick={() => setActivePage('home')}>Тарифы</a>
-            <a href="#calculator" onClick={() => setActivePage('home')}>Калькулятор</a>
-            <a href="#blog" onClick={() => setActivePage('home')}>Блог</a>
-            <a href="#about" onClick={() => setActivePage('home')}>О нас</a>
-            <a href="#contact" onClick={() => setActivePage('home')}>Контакты</a>
-          </nav>
-          <div className="flex items-center gap-2">
-            {!user ? (
-              <>
-                <button onClick={() => setShowLogin(true)} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Войти</button>
-                <button onClick={() => setShowRegister(true)} className="px-3 py-2 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Регистрация</button>
-              </>
-            ) : (
-              <>
-                <button onClick={() => setActivePage('account')} className="px-3 py-2 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Кабинет</button>
-                <button onClick={logout} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Выйти</button>
-              </>
-            )}
-          </div>
-        </Section>
-      </header>
+      {/* Header */}
+      <Header />
+
+      {/* Hero секция с современным дизайном */}
+      <div className="relative z-10">
+        <Hero />
+        
+        {/* Декоративные орбы */}
+        <GlowingOrb 
+          size="lg" 
+          color="blue" 
+          className="absolute top-20 right-10 opacity-10" 
+        />
+        <GlowingOrb 
+          size="md" 
+          color="violet" 
+          className="absolute top-40 left-20 opacity-15" 
+        />
+      </div>
 
       {/* Модалки авторизации */}
       <Modal open={showLogin} onClose={() => setShowLogin(false)} title="Вход">
@@ -557,36 +540,6 @@ export default function Index() {
           </div>
         </form>
       </Modal>
-
-      {/* HERO */}
-      <div className="relative" style={{ backgroundColor: COLORS.dark, color: 'white' }}>
-        <img src="/api/placeholder/1600/800" alt="Команда Полка+" className="pointer-events-none select-none absolute inset-0 w-full h-full object-cover opacity-25" />
-        <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(30,27,75,0.95) 0%, rgba(30,27,75,0.85) 45%, rgba(30,27,75,0.78) 70%, rgba(30,27,75,0.70) 100%)' }} />
-        <Section className="relative py-14 lg:py-20">
-          <div className="grid lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-extrabold">Фулфилмент Полка+ — выгодно, честно, под ключ</h1>
-              <p className="mt-4 text-lg text-neutral-200">Цены ниже рынка на 10–20% • Фото и базовая аналитика включены • Приёмка, маркировка, упаковка, доставка на WB/Ozon/Я.Маркет</p>
-              <div className="mt-6 flex gap-3">
-                <a href="#calculator" className="px-5 py-3 rounded-2xl font-semibold shadow" style={{ backgroundColor: 'white', color: COLORS.dark }} onClick={() => setActivePage('home')}>Рассчитать тариф</a>
-                <a href="#contact" className="px-5 py-3 rounded-2xl font-semibold ring-2" style={{ borderColor: 'white' }} onClick={() => setActivePage('home')}>Оставить заявку</a>
-              </div>
-              <ul className="mt-6 space-y-2 text-sm text-neutral-200">
-                {['Приёмка и проверка на брак','Адресное хранение: первые 3 дня бесплатно','Доставка до Новосемейкино и федеральных РЦ'].map(t => (
-                  <li key={t} className="flex items-start gap-2"><CheckIcon/> <span>{t}</span></li>
-                ))}
-              </ul>
-            </div>
-            <div className="lg:justify-self-end">
-              <div className="rounded-3xl p-6 shadow-lg" style={{ backgroundColor: COLORS.purple }}>
-                <p className="text-sm text-neutral-200">Наше УТП</p>
-                <p className="text-xl font-semibold">Гарантируем приёмку 99,5% поставок и фиксируем цены в договоре</p>
-                <p className="mt-2 text-neutral-100">Персональный менеджер 24/7, прозрачные отчёты, интеграция с маркетплейсами.</p>
-              </div>
-            </div>
-          </div>
-        </Section>
-      </div>
 
       {/* Услуги */}
       <Section id="services" className="py-20">
