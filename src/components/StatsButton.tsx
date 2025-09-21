@@ -7,23 +7,16 @@ interface StatsButtonProps {
 }
 
 export const StatsButton = ({ onClick, isActive = false }: StatsButtonProps) => {
-  console.log("StatsButton rendering, isActive:", isActive);
-  
   return (
     <button
-      onClick={() => {
-        console.log("StatsButton clicked!");
-        onClick();
-      }}
+      onClick={onClick}
       className={cn(
-        "w-14 h-14 rounded-full shadow-elegant flex items-center justify-center transition-all duration-300 hover:scale-110 group relative",
-        "border-2 border-white", // Добавляем временную белую рамку для видимости
+        "w-14 h-14 rounded-full shadow-elegant flex items-center justify-center transition-all duration-300 hover:scale-110 glass-card backdrop-blur-md group relative",
         isActive 
-          ? "bg-green-500 pulse-glow" // Упрощаем цвета
-          : "bg-blue-500"
+          ? "bg-gradient-accent pulse-glow" 
+          : "bg-gradient-primary"
       )}
       aria-label="Показать живую статистику"
-      style={{ zIndex: 9999 }} // Принудительно высокий z-index
     >
       <BarChart3 className="w-6 h-6 text-white" />
       
@@ -35,7 +28,7 @@ export const StatsButton = ({ onClick, isActive = false }: StatsButtonProps) => 
       
       {/* Live indicator */}
       {isActive && (
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
           <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
         </div>
       )}
