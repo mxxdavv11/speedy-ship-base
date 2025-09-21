@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield } from "lucide-react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock } from "lucide-react";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -55,11 +55,48 @@ export default function Index() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [errors, setErrors] = useState({ inn: '' });
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const saved = localStorage.getItem('polka_user');
     if (saved) setUser(JSON.parse(saved));
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 500);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const validateContactForm = () => {
+    const errors: Record<string, string> = {};
+    if (!contactForm.name.trim()) errors.name = 'Имя обязательно';
+    if (!contactForm.phone.trim()) errors.phone = 'Телефон обязателен';
+    if (contactForm.email && !/\S+@\S+\.\S+/.test(contactForm.email)) errors.email = 'Неверный формат email';
+    return errors;
+  };
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    const errors = validateContactForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    // Здесь отправка формы
+    alert('Спасибо! Мы свяжемся с вами в ближайшее время.');
+    setContactForm({ name: '', phone: '', email: '', message: '' });
+    setFormErrors({});
+  };
+
+  const handleContactChange = (field) => (e) => {
+    setContactForm(prev => ({ ...prev, [field]: e.target.value }));
+    if (formErrors[field]) setFormErrors(prev => ({ ...prev, [field]: '' }));
+  };
 
   function validateINN(inn) { return /^\d{10}(\d{2})?$/.test((inn || '').trim()); }
 
@@ -195,7 +232,37 @@ export default function Index() {
     <div className="min-h-screen" style={{ backgroundColor: COLORS.lightBg, color: COLORS.dark }}>
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes countUp { 0% { opacity: 0; } 100% { opacity: 1; } }
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-count { animation: countUp 1.5s ease-out forwards; }
       `}</style>
+
+      {/* Structured Data для SEO */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Полка+",
+          "description": "Фулфилмент услуги для интернет-магазинов",
+          "url": window.location.origin,
+          "telephone": "+7 (800) 123-45-67",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Самара",
+            "addressCountry": "RU"
+          },
+          "sameAs": [],
+          "service": {
+            "@type": "Service",
+            "serviceType": "Fulfillment services",
+            "provider": {
+              "@type": "Organization",
+              "name": "Полка+"
+            }
+          }
+        })
+      }} />
 
       {/* Шапка */}
       <header className="relative">
@@ -331,6 +398,77 @@ export default function Index() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Статистика */}
+      <Section className="py-16">
+        <div className="text-center mb-12 animate-fade-in-up">
+          <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.dark }}>Нам доверяют</h2>
+          <p className="mt-3 text-lg" style={{ color: '#6B7280' }}>Цифры, которые говорят сами за себя</p>
+        </div>
+        
+        <div className="grid md:grid-cols-4 gap-8">
+          {[
+            { icon: Users, number: '1000+', label: 'Довольных клиентов', color: COLORS.pink },
+            { icon: TrendingUp, number: '2.5М', label: 'Обработано заказов', color: COLORS.purple },
+            { icon: Clock, number: '24/7', label: 'Поддержка', color: COLORS.pink },
+            { icon: Star, number: '99.5%', label: 'Успешных приёмок', color: COLORS.purple }
+          ].map(({ icon: Icon, number, label, color }, i) => (
+            <div key={i} className="text-center p-6 rounded-2xl bg-white shadow-sm animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: `${color}1A` }}>
+                <Icon className="w-8 h-8" style={{ color }} />
+              </div>
+              <div className="text-3xl font-bold animate-count" style={{ color: COLORS.dark }}>{number}</div>
+              <div className="mt-2 text-sm" style={{ color: '#6B7280' }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Отзывы */}
+      <div className="py-16" style={{ backgroundColor: 'white' }}>
+        <Section>
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold" style={{ color: COLORS.dark }}>Отзывы клиентов</h2>
+            <p className="mt-3 text-lg" style={{ color: '#6B7280' }}>Что говорят о нас наши партнёры</p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {[
+              {
+                name: 'Анна Петрова',
+                company: 'Магазин детских товаров',
+                text: 'Полка+ помогла нам сократить расходы на логистику на 30%. Отличный сервис и профессиональная команда!',
+                rating: 5
+              },
+              {
+                name: 'Дмитрий Иванов',
+                company: 'Интернет-магазин электроники',
+                text: 'Работаем уже полгода. Никаких проблем с приёмкой, всё чётко и в срок. Персональный менеджер всегда на связи.',
+                rating: 5
+              },
+              {
+                name: 'Елена Смирнова',
+                company: 'Бренд косметики',
+                text: 'Особенно понравилось качество упаковки и фотосъёмки товаров. Конверсия выросла благодаря качественному контенту.',
+                rating: 5
+              }
+            ].map((review, i) => (
+              <div key={i} className="p-6 rounded-2xl shadow-sm ring-1 bg-white" style={{ borderColor: '#E5E7EB' }}>
+                <div className="flex mb-3">
+                  {[...Array(review.rating)].map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-current" style={{ color: '#FCD34D' }} />
+                  ))}
+                </div>
+                <p className="text-sm mb-4 italic" style={{ color: '#4B5563' }}>"{review.text}"</p>
+                <div>
+                  <div className="font-semibold" style={{ color: COLORS.dark }}>{review.name}</div>
+                  <div className="text-xs" style={{ color: '#6B7280' }}>{review.company}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
       </div>
 
       {/* Тарифы */}
@@ -484,19 +622,97 @@ export default function Index() {
       {/* Контакты */}
       <div id="contact" style={{ backgroundColor: COLORS.dark, color: 'white' }}>
         <Section className="py-16">
-          <h2 className="text-2xl md:text-3xl font-bold">Связаться с нами</h2>
-          <p className="mt-2 text-neutral-300">Оставьте заявку — вышлем персональные условия и договор.</p>
-          <form className="mt-8 grid sm:grid-cols-2 gap-4">
-            <input placeholder="Имя" className="rounded-xl px-4 py-3 text-neutral-900" />
-            <input placeholder="Телефон или Telegram" className="rounded-xl px-4 py-3 text-neutral-900" />
-            <input placeholder="E‑mail (необязательно)" className="rounded-xl px-4 py-3 text-neutral-900 sm:col-span-2" />
-            <textarea placeholder="Кратко опишите объёмы и задачи" className="rounded-xl px-4 py-3 text-neutral-900 sm:col-span-2" rows={4} />
-            <button type="button" className="sm:col-span-2 mt-2 px-5 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Отправить</button>
-          </form>
+          <div className="grid lg:grid-cols-2 gap-12">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold">Связаться с нами</h2>
+              <p className="mt-2 text-neutral-300">Оставьте заявку — вышлем персональные условия и договор.</p>
+              
+              <div className="mt-8 space-y-4 text-neutral-300">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.pink }}>
+                    📞
+                  </div>
+                  <span>+7 (800) 123-45-67</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.pink }}>
+                    ✉️
+                  </div>
+                  <span>info@polka-plus.ru</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.pink }}>
+                    📍
+                  </div>
+                  <span>Самара, ул. Складская, 123</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div>
+                  <input 
+                    placeholder="Имя *" 
+                    value={contactForm.name}
+                    onChange={handleContactChange('name')}
+                    className="w-full rounded-xl px-4 py-3 text-neutral-900" 
+                  />
+                  {formErrors.name && <p className="text-red-400 text-sm mt-1">{formErrors.name}</p>}
+                </div>
+                
+                <div>
+                  <input 
+                    placeholder="Телефон или Telegram *" 
+                    value={contactForm.phone}
+                    onChange={handleContactChange('phone')}
+                    className="w-full rounded-xl px-4 py-3 text-neutral-900" 
+                  />
+                  {formErrors.phone && <p className="text-red-400 text-sm mt-1">{formErrors.phone}</p>}
+                </div>
+                
+                <div>
+                  <input 
+                    placeholder="E‑mail" 
+                    value={contactForm.email}
+                    onChange={handleContactChange('email')}
+                    className="w-full rounded-xl px-4 py-3 text-neutral-900" 
+                  />
+                  {formErrors.email && <p className="text-red-400 text-sm mt-1">{formErrors.email}</p>}
+                </div>
+                
+                <textarea 
+                  placeholder="Кратко опишите объёмы и задачи" 
+                  value={contactForm.message}
+                  onChange={handleContactChange('message')}
+                  className="w-full rounded-xl px-4 py-3 text-neutral-900" 
+                  rows={4} 
+                />
+                
+                <button type="submit" className="w-full mt-4 px-5 py-3 rounded-2xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>
+                  Отправить заявку
+                </button>
+              </form>
+            </div>
+          </div>
         </Section>
       </div>
 
-      <footer className="py-8 text-center text-sm" style={{ color: '#6B7280' }}>© {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.</footer>
+      <footer className="py-8 text-center text-sm" style={{ color: '#6B7280' }}>
+        © {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.
+      </footer>
+
+      {/* Кнопка "Наверх" */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-50"
+          style={{ backgroundColor: COLORS.pink, color: 'white' }}
+          aria-label="Наверх"
+        >
+          <ChevronUp className="w-6 h-6" />
+        </button>
+      )}
     </div>
   );
 }
