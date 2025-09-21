@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock } from "lucide-react";
+import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2 } from "lucide-react";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -200,28 +200,128 @@ export default function Index() {
           </div>
 
           {/* Разделы по ролям */}
-          <div className="mt-8 grid lg:grid-cols-2 gap-6">
-            {can('view_requests') && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заявки</h3>
-                <p className="text-sm" style={{ color: '#6B7280' }}>Список ваших заявок на приёмку и обработку товаров.</p>
-                <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
-                  <p className="text-sm">Заявка #001 - В обработке</p>
-                  <p className="text-xs mt-1" style={{ color: '#6B7280' }}>200 единиц товара, поступление завтра</p>
+          <div className="mt-8 space-y-6">
+            {/* Видеонаблюдение - доступно всем ролям */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <Camera className="w-5 h-5" style={{ color: COLORS.pink }} />
+                <h3 className="font-semibold" style={{ color: COLORS.dark }}>Видеонаблюдение складов</h3>
+              </div>
+              <p className="text-sm mb-6" style={{ color: '#6B7280' }}>Онлайн-мониторинг ваших товаров на складских стеллажах</p>
+              
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { id: 'A1', name: 'Стеллаж A-1', status: 'online' },
+                  { id: 'A2', name: 'Стеллаж A-2', status: 'online' },
+                  { id: 'B1', name: 'Стеллаж B-1', status: 'offline' },
+                  { id: 'B2', name: 'Стеллаж B-2', status: 'online' }
+                ].map((camera) => (
+                  <div key={camera.id} className="relative group">
+                    <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden relative">
+                      {/* Имитация видеопотока */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900">
+                        <div className="absolute inset-0 opacity-30">
+                          <div className="grid grid-cols-8 grid-rows-6 h-full">
+                            {Array.from({ length: 48 }).map((_, i) => (
+                              <div key={i} className="border border-gray-600/20"></div>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Статус камеры */}
+                        <div className="absolute top-2 left-2">
+                          <div className={`w-2 h-2 rounded-full ${camera.status === 'online' ? 'bg-green-400' : 'bg-red-400'}`}></div>
+                        </div>
+                        
+                        {/* Название камеры */}
+                        <div className="absolute top-2 right-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
+                          {camera.id}
+                        </div>
+                        
+                        {/* Время */}
+                        <div className="absolute bottom-2 left-2 bg-black/50 px-2 py-1 rounded text-white text-xs">
+                          {new Date().toLocaleTimeString('ru-RU')}
+                        </div>
+                        
+                        {camera.status === 'online' ? (
+                          <>
+                            {/* Имитация движения товаров */}
+                            <div className="absolute top-1/2 left-1/3 w-4 h-6 bg-blue-400/60 rounded-sm animate-pulse"></div>
+                            <div className="absolute top-2/3 right-1/4 w-6 h-4 bg-yellow-400/60 rounded-sm"></div>
+                            
+                            {/* Кнопки управления при наведении */}
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                              <button className="p-2 bg-white/20 rounded-full text-white hover:bg-white/30">
+                                <Play className="w-4 h-4" />
+                              </button>
+                              <button className="p-2 bg-white/20 rounded-full text-white hover:bg-white/30">
+                                <Maximize2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="text-white text-xs text-center">
+                              <Camera className="w-6 h-6 mx-auto mb-1 opacity-50" />
+                              <div>Нет сигнала</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2 text-center">
+                      <div className="text-sm font-medium" style={{ color: COLORS.dark }}>{camera.name}</div>
+                      <div className={`text-xs ${camera.status === 'online' ? 'text-green-600' : 'text-red-600'}`}>
+                        {camera.status === 'online' ? 'В сети' : 'Офлайн'}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' }}>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                      <span style={{ color: '#4B5563' }}>3 камеры онлайн</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                      <span style={{ color: '#4B5563' }}>1 камера офлайн</span>
+                    </div>
+                  </div>
+                  <button className="text-sm font-medium hover:underline" style={{ color: COLORS.pink }}>
+                    Все камеры →
+                  </button>
                 </div>
               </div>
-            )}
-            
-            {can('view_orders') && (
-              <div className="bg-white rounded-2xl p-6 shadow-sm">
-                <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заказы</h3>
-                <p className="text-sm" style={{ color: '#6B7280' }}>Отправленные заказы и их статусы.</p>
-                <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
-                  <p className="text-sm">Заказ #WB12345 - Доставлен</p>
-                  <p className="text-xs mt-1" style={{ color: '#6B7280' }}>1 единица, доставка на РЦ Новосемейкино</p>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {can('view_requests') && (
+                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                  <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заявки</h3>
+                  <p className="text-sm" style={{ color: '#6B7280' }}>Список ваших заявок на приёмку и обработку товаров.</p>
+                  <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
+                    <p className="text-sm">Заявка #001 - В обработке</p>
+                    <p className="text-xs mt-1" style={{ color: '#6B7280' }}>200 единиц товара, поступление завтра</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              
+              {can('view_orders') && (
+                <div className="bg-white rounded-2xl p-6 shadow-sm">
+                  <h3 className="font-semibold mb-4" style={{ color: COLORS.dark }}>Заказы</h3>
+                  <p className="text-sm" style={{ color: '#6B7280' }}>Отправленные заказы и их статусы.</p>
+                  <div className="mt-4 p-4 rounded-xl border" style={{ borderColor: '#E5E7EB' }}>
+                    <p className="text-sm">Заказ #WB12345 - Доставлен</p>
+                    <p className="text-xs mt-1" style={{ color: '#6B7280' }}>1 единица, доставка на РЦ Новосемейкино</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </Section>
       </div>
