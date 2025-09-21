@@ -3,6 +3,8 @@ import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield
 import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { GlowingOrb } from "@/components/GlowingOrb";
+import { FloatingMessengers } from "@/components/FloatingMessengers";
+import { ForgotPasswordModal } from "@/components/ForgotPasswordModal";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -57,6 +59,7 @@ export default function Index() {
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [errors, setErrors] = useState({ inn: '' });
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -415,10 +418,33 @@ export default function Index() {
           <div className="space-y-4">
             <input name="email" placeholder="Email или телефон" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
             <input name="password" type="password" placeholder="Пароль" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            
+            <div className="flex justify-end">
+              <button 
+                type="button"
+                onClick={() => {
+                  setShowLogin(false);
+                  setShowForgotPassword(true);
+                }}
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                Забыли пароль?
+              </button>
+            </div>
+            
             <button type="submit" className="w-full py-3 rounded-xl font-semibold" style={{ backgroundColor: COLORS.pink, color: 'white' }}>Войти</button>
           </div>
         </form>
       </Modal>
+
+      <ForgotPasswordModal 
+        open={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+        onBackToLogin={() => {
+          setShowForgotPassword(false);
+          setShowLogin(true);
+        }}
+      />
 
       <Modal open={showRegister} onClose={() => setShowRegister(false)} title="Регистрация">
         <form onSubmit={(e) => handleAuthSubmit('register', e)}>
@@ -803,78 +829,106 @@ export default function Index() {
         </Section>
       </div>
 
-      <footer className="py-8 text-center text-sm" style={{ color: '#6B7280' }}>
-        © {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.
+      <footer className="relative z-10 bg-gradient-to-t from-surface-light to-background border-t border-border/50">
+        <div className="container mx-auto px-4 py-12">
+          {/* Основная информация */}
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold">П+</span>
+                </div>
+                <h3 className="text-xl font-bold">Полка+</h3>
+              </div>
+              <p className="text-muted-foreground mb-4 max-w-md">
+                Современные решения фулфилмента для вашего бизнеса. 
+                Склад, упаковка, доставка и возвраты под ключ.
+              </p>
+              <div className="flex gap-4">
+                <a href="tel:+7800123456" className="text-primary hover:text-primary/80 transition-colors">
+                  +7 (800) 123-45-67
+                </a>
+                <a href="mailto:info@polka-plus.ru" className="text-primary hover:text-primary/80 transition-colors">
+                  info@polka-plus.ru
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Услуги</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#services" className="hover:text-foreground transition-colors">Складские услуги</a></li>
+                <li><a href="#services" className="hover:text-foreground transition-colors">Упаковка заказов</a></li>
+                <li><a href="#services" className="hover:text-foreground transition-colors">Доставка</a></li>
+                <li><a href="#services" className="hover:text-foreground transition-colors">Возвраты</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Компания</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><a href="#about" className="hover:text-foreground transition-colors">О нас</a></li>
+                <li><a href="#contact" className="hover:text-foreground transition-colors">Контакты</a></li>
+                <li><a href="#blog" className="hover:text-foreground transition-colors">Блог</a></li>
+                <li><a href="#careers" className="hover:text-foreground transition-colors">Карьера</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Юридические документы */}
+          <div className="border-t border-border/50 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} Полка+. Фулфилмент в Самаре и области.
+              </div>
+              
+              <div className="flex flex-wrap gap-6 text-sm">
+                <button 
+                  onClick={() => alert('Открытие политики конфиденциальности')}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Политика конфиденциальности
+                </button>
+                <button 
+                  onClick={() => alert('Открытие пользовательского соглашения')}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Пользовательское соглашение
+                </button>
+                <button 
+                  onClick={() => alert('Открытие договора оферты')}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Договор оферты
+                </button>
+                <button 
+                  onClick={() => alert('Открытие условий использования')}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Условия использования
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
 
       {/* Техно-статистика */}
       <TechStats />
 
-      {/* Плавающие кнопки */}
-      <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
-        {/* Мессенджеры */}
-        <div className="flex flex-col gap-2">
-          {/* ВКонтакте */}
-          <button
-            onClick={() => alert('Переход в ВК (пока заглушка)')}
-            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
-            style={{ backgroundColor: '#0077FF' }}
-            aria-label="ВКонтакте"
-          >
-            <MessageCircle className="w-5 h-5 text-white" />
-            
-            {/* Tooltip */}
-            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              ВКонтакте
-              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
-            </div>
-          </button>
-
-          {/* Telegram */}
-          <button
-            onClick={() => alert('Переход в Telegram (пока заглушка)')}
-            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
-            style={{ backgroundColor: '#0088cc' }}
-            aria-label="Telegram"
-          >
-            <Send className="w-5 h-5 text-white" />
-            
-            {/* Tooltip */}
-            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              Telegram
-              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
-            </div>
-          </button>
-
-          {/* MAX */}
-          <button
-            onClick={() => alert('Переход в MAX (пока заглушка)')}
-            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
-            style={{ backgroundColor: '#00C853' }}
-            aria-label="MAX"
-          >
-            <Mail className="w-5 h-5 text-white" />
-            
-            {/* Tooltip */}
-            <div className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              MAX
-              <div className="absolute top-1/2 -translate-y-1/2 left-full w-1.5 h-1.5 bg-gray-900 rotate-45"></div>
-            </div>
-          </button>
-        </div>
-
         {/* Кнопка "Наверх" */}
         {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
-            style={{ backgroundColor: COLORS.pink, color: 'white' }}
-            aria-label="Наверх"
-          >
-            <ChevronUp className="w-5 h-5" />
-          </button>
+          <div className="fixed bottom-6 left-6 z-40">
+            <button
+              onClick={scrollToTop}
+              className="w-12 h-12 rounded-full shadow-elegant flex items-center justify-center transition-all duration-300 hover:scale-110 glass-card backdrop-blur-md"
+              style={{ backgroundColor: COLORS.pink, color: 'white' }}
+              aria-label="Наверх"
+            >
+              <ChevronUp className="w-5 h-5" />
+            </button>
+          </div>
         )}
-      </div>
     </div>
   );
 }
