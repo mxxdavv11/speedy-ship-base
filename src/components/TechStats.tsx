@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { ModernCard } from "./ModernCard";
 import { TechBadge } from "./TechBadge";
-import { Activity, Shield, Zap, TrendingUp } from "lucide-react";
+import { Activity, Shield, Zap, TrendingUp, X } from "lucide-react";
 
-export const TechStats = () => {
+interface TechStatsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const TechStats = ({ isOpen, onClose }: TechStatsProps) => {
   const [uptime, setUptime] = useState(99.9);
   const [processed, setProcessed] = useState(1247);
   const [satisfaction, setSatisfaction] = useState(98.7);
 
   useEffect(() => {
+    if (!isOpen) return;
+    
     const interval = setInterval(() => {
       setProcessed(prev => prev + Math.floor(Math.random() * 3));
       setUptime(prev => Math.min(99.99, prev + Math.random() * 0.01));
@@ -16,7 +23,9 @@ export const TechStats = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const stats = [
     {
@@ -54,27 +63,50 @@ export const TechStats = () => {
   ];
 
   return (
-    <div className="fixed bottom-20 left-6 z-40">
-      <ModernCard glass className="p-4 w-64 animate-slide-up">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-          <TechBadge className="text-xs font-mono">Live Stats</TechBadge>
-        </div>
-        
-        <div className="space-y-3">
-          {stats.map((stat, index) => (
-            <div key={stat.label} className={`flex items-center gap-3 p-2 rounded-lg ${stat.gradient}`}>
-              <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <div className="flex-1">
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
-                <div className="font-mono font-bold">
-                  {stat.value}{stat.suffix}
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity"
+        onClick={onClose}
+      />
+      
+      {/* Stats Panel */}
+      <div className="fixed bottom-20 left-6 z-50 animate-slide-up">
+        <ModernCard glass className="p-6 w-80">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+              <TechBadge className="text-sm font-mono">Live Stats</TechBadge>
+            </div>
+            <button
+              onClick={onClose}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-4">
+            {stats.map((stat, index) => (
+              <div key={stat.label} className={`flex items-center gap-3 p-3 rounded-lg ${stat.gradient} animate-fade-in`} style={{ animationDelay: `${index * 100}ms` }}>
+                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                <div className="flex-1">
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div className="font-mono font-bold text-lg">
+                    {stat.value}{stat.suffix}
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-border/50">
+            <div className="text-xs text-muted-foreground text-center">
+              Обновляется каждые 5 секунд
             </div>
-          ))}
-        </div>
-      </ModernCard>
-    </div>
+          </div>
+        </ModernCard>
+      </div>
+    </>
   );
 };

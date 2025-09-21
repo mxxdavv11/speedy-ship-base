@@ -4,6 +4,7 @@ import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { GlowingOrb } from "@/components/GlowingOrb";
 import { FloatingMessengers } from "@/components/FloatingMessengers";
+import { StatsButton } from "@/components/StatsButton";
 import { ForgotPasswordModal } from "@/components/ForgotPasswordModal";
 
 // === Полка+ — лендинг с ЛК и ролями ===
@@ -60,6 +61,7 @@ export default function Index() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showStats, setShowStats] = useState(false);
   const [errors, setErrors] = useState({ inn: '' });
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [contactForm, setContactForm] = useState({ name: '', phone: '', email: '', message: '' });
@@ -913,8 +915,23 @@ export default function Index() {
         </div>
       </footer>
 
-      {/* Техно-статистика */}
-      <TechStats />
+      {/* Живая статистика по запросу */}
+      <TechStats 
+        isOpen={showStats} 
+        onClose={() => setShowStats(false)} 
+      />
+
+      {/* Плавающие кнопки */}
+      <div className="fixed bottom-6 right-6 flex flex-col-reverse items-end gap-3 z-50">
+        {/* Кнопка статистики */}
+        <StatsButton 
+          onClick={() => setShowStats(!showStats)}
+          isActive={showStats}
+        />
+        
+        {/* Мессенджеры */}
+        <FloatingMessengers />
+      </div>
 
         {/* Кнопка "Наверх" */}
         {showScrollTop && (
