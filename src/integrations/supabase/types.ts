@@ -14,7 +14,174 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      marketplace_credentials: {
+        Row: {
+          api_key: string
+          api_secret: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          marketplace: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          api_key: string
+          api_secret?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          marketplace: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          api_key?: string
+          api_secret?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          marketplace?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      marketplace_orders: {
+        Row: {
+          created_at: string
+          customer_name: string | null
+          delivery_date: string | null
+          id: string
+          items_count: number | null
+          marketplace: string
+          order_id: string
+          order_number: string | null
+          raw_data: Json | null
+          status: string
+          total_amount: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_name?: string | null
+          delivery_date?: string | null
+          id?: string
+          items_count?: number | null
+          marketplace: string
+          order_id: string
+          order_number?: string | null
+          raw_data?: Json | null
+          status: string
+          total_amount?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_name?: string | null
+          delivery_date?: string | null
+          id?: string
+          items_count?: number | null
+          marketplace?: string
+          order_id?: string
+          order_number?: string | null
+          raw_data?: Json | null
+          status?: string
+          total_amount?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      marketplace_products: {
+        Row: {
+          created_at: string
+          id: string
+          last_sync_at: string | null
+          marketplace: string
+          name: string
+          price: number | null
+          product_id: string
+          raw_data: Json | null
+          sku: string | null
+          stock_quantity: number
+          updated_at: string
+          user_id: string
+          warehouse: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_sync_at?: string | null
+          marketplace: string
+          name: string
+          price?: number | null
+          product_id: string
+          raw_data?: Json | null
+          sku?: string | null
+          stock_quantity?: number
+          updated_at?: string
+          user_id: string
+          warehouse?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_sync_at?: string | null
+          marketplace?: string
+          name?: string
+          price?: number | null
+          product_id?: string
+          raw_data?: Json | null
+          sku?: string | null
+          stock_quantity?: number
+          updated_at?: string
+          user_id?: string
+          warehouse?: string | null
+        }
+        Relationships: []
+      }
+      marketplace_sales: {
+        Row: {
+          commission: number
+          created_at: string
+          date: string
+          id: string
+          marketplace: string
+          net_revenue: number
+          orders_count: number
+          revenue: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commission?: number
+          created_at?: string
+          date: string
+          id?: string
+          marketplace: string
+          net_revenue?: number
+          orders_count?: number
+          revenue?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commission?: number
+          created_at?: string
+          date?: string
+          id?: string
+          marketplace?: string
+          net_revenue?: number
+          orders_count?: number
+          revenue?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
