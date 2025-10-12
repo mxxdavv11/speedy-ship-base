@@ -155,14 +155,6 @@ export default {
           "50%": {
             transform: "translateY(-5px)"
           }
-        },
-        "float": {
-          "0%, 100%": {
-            transform: "translateY(0px)"
-          },
-          "50%": {
-            transform: "translateY(-20px)"
-          }
         }
       },
       animation: {
@@ -173,7 +165,6 @@ export default {
         "scale-in": "scale-in 0.5s ease-out",
         "shimmer": "shimmer 2s infinite",
         "bounce-subtle": "bounce-subtle 2s infinite",
-        "float": "float 6s ease-in-out infinite",
       },
     },
   },

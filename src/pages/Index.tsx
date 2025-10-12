@@ -10,12 +10,6 @@ import { OrdersDashboard } from "@/components/OrdersDashboard";
 import { ForgotPasswordModal } from "@/components/ForgotPasswordModal";
 import { ModernCard } from "@/components/ModernCard";
 import { TechBadge } from "@/components/TechBadge";
-import { BlogSection } from "@/components/BlogSection";
-import { PeopleStickers } from "@/components/PeopleStickers";
-import { MarketplaceSettings } from "@/components/MarketplaceSettings";
-import { MarketplaceData } from "@/components/MarketplaceData";
-import { AuthForms } from "@/components/AuthForms";
-import { supabase } from "@/integrations/supabase/client";
 
 // === Полка+ — лендинг с ЛК и ролями ===
 const COLORS = { pink: "#FF2E92", purple: "#5A0B7A", dark: "#1E1B4B", lightBg: "#F9FAFB" };
@@ -79,35 +73,8 @@ export default function Index() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser({
-          name: session.user.user_metadata?.full_name || 'Клиент',
-          email: session.user.email || '',
-          role: 'Владелец',
-          inn: '',
-        });
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser({
-          name: session.user.user_metadata?.full_name || 'Клиент',
-          email: session.user.email || '',
-          role: 'Владелец',
-          inn: '',
-        });
-        setActivePage('account');
-      } else {
-        setUser(null);
-        setActivePage('home');
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    const saved = localStorage.getItem('polka_user');
+    if (saved) setUser(JSON.parse(saved));
   }, []);
 
   useEffect(() => {
@@ -159,11 +126,7 @@ export default function Index() {
     setUser(newUser); setShowLogin(false); setShowRegister(false); setActivePage('account'); setErrors({ inn: '' });
   }
 
-  const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setActivePage('home');
-  };
+  const logout = () => { localStorage.removeItem('polka_user'); setUser(null); setActivePage('home'); };
 
   // калькулятор (короткая версия)
   const [input, setInput] = useState({ palletsPickup: 0, boxesPickup: 0, unitsCount: 0, unitsMark: 0, packType: 'boppSmall', bundles: 0, storageBoxes: 0, storagePallets: 0, storageDays: 0, cubesDelivery: 0, extraBoxesDelivery: 0, palletsDelivery: 0, photoSkus: 0, videos: 0, spins: 0, shipments: 0, honestSignUnits: 0 });
@@ -216,10 +179,9 @@ export default function Index() {
           </div>
           
           {/* Навигация по разделам */}
-          <div className="flex gap-2 mb-8 p-1 bg-surface-light rounded-xl overflow-x-auto">
+          <div className="flex gap-2 mb-8 p-1 bg-surface-light rounded-xl">
             {[
               { id: 'dashboard', label: 'Обзор', icon: '📊' },
-              { id: 'marketplaces', label: 'Маркетплейсы', icon: '🛍️' },
               { id: 'finance', label: 'Финансы', icon: '💰' },
               { id: 'orders', label: 'Заказы', icon: '📦' },
               { id: 'surveillance', label: 'Видеонаблюдение', icon: '📹' }
@@ -325,23 +287,6 @@ export default function Index() {
                   </button>
                 </div>
               </ModernCard>
-            </div>
-          )}
-
-          {/* Маркетплейсы */}
-          {activeTab === 'marketplaces' && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-2 mb-6">
-                <ShoppingBag className="w-6 h-6 text-primary" />
-                <h2 className="text-2xl font-semibold">Интеграция с маркетплейсами</h2>
-              </div>
-              
-              <MarketplaceData />
-              
-              <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4">Настройка API ключей</h3>
-                <MarketplaceSettings />
-              </div>
             </div>
           )}
 
@@ -486,8 +431,6 @@ export default function Index() {
     <div className="min-h-screen bg-gradient-to-br from-background via-surface-light to-background relative overflow-hidden">
       {/* Particle Background */}
       <ParticleBackground />
-      {/* People Stickers */}
-      <PeopleStickers />
       <style>{`
         @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
@@ -564,11 +507,10 @@ export default function Index() {
 
       {/* Модалки авторизации */}
       <Modal open={showLogin} onClose={() => setShowLogin(false)} title="Вход">
-        <AuthForms 
-          mode="login" 
-          onSuccess={() => setShowLogin(false)}
-          onSwitchMode={() => { setShowLogin(false); setShowRegister(true); }}
-        />
+        <form onSubmit={(e) => handleAuthSubmit('login', e)}>
+          <div className="space-y-4">
+            <input name="email" placeholder="Email или телефон" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
+            <input name="password" type="password" placeholder="Пароль" className="w-full rounded-xl border px-3 py-2" style={{ borderColor: '#D1D5DB' }} />
             
             <div className="flex justify-end">
               <button 
@@ -890,9 +832,6 @@ export default function Index() {
           </div>
         </div>
       </Section>
-
-      {/* Blog Section */}
-      <BlogSection />
 
       {/* Контакты */}
       <div id="contact" style={{ backgroundColor: COLORS.dark, color: 'white' }}>
