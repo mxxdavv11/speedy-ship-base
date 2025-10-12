@@ -1252,19 +1252,19 @@ export default function Index() {
             <div>
               <h4 className="font-semibold mb-4">Услуги</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#services" className="hover:text-foreground transition-colors">Складские услуги</a></li>
-                <li><a href="#services" className="hover:text-foreground transition-colors">Упаковка заказов</a></li>
-                <li><a href="#services" className="hover:text-foreground transition-colors">Доставка</a></li>
-                <li><a href="#services" className="hover:text-foreground transition-colors">Возвраты</a></li>
+                <li><Link to="/services" className="hover:text-foreground transition-colors">Складские услуги</Link></li>
+                <li><Link to="/services" className="hover:text-foreground transition-colors">Упаковка заказов</Link></li>
+                <li><Link to="/services" className="hover:text-foreground transition-colors">Доставка</Link></li>
+                <li><Link to="/services" className="hover:text-foreground transition-colors">Возвраты</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Компания</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#about" className="hover:text-foreground transition-colors">О нас</a></li>
-                <li><a href="#contact" className="hover:text-foreground transition-colors">Контакты</a></li>
-                <li><a href="#blog" className="hover:text-foreground transition-colors">Блог</a></li>
+                <li><Link to="/about" className="hover:text-foreground transition-colors">О нас</Link></li>
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Контакты</Link></li>
+                <li><Link to="/blog" className="hover:text-foreground transition-colors">Блог</Link></li>
                 <li><Link to="/careers" className="hover:text-foreground transition-colors">Карьера</Link></li>
               </ul>
             </div>
@@ -1278,18 +1278,18 @@ export default function Index() {
               </div>
               
               <div className="flex flex-wrap gap-6 text-sm">
-                <button onClick={() => alert('Открытие политики конфиденциальности')} className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
                   Политика конфиденциальности
-                </button>
-                <button onClick={() => alert('Открытие пользовательского соглашения')} className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
                   Пользовательское соглашение
-                </button>
-                <button onClick={() => alert('Открытие договора оферты')} className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
                   Договор оферты
-                </button>
-                <button onClick={() => alert('Открытие условий использования')} className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
                   Условия использования
-                </button>
+                </Link>
               </div>
             </div>
           </div>
