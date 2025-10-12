@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail, Package } from "lucide-react";
 import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
@@ -1264,7 +1265,7 @@ export default function Index() {
                 <li><a href="#about" className="hover:text-foreground transition-colors">О нас</a></li>
                 <li><a href="#contact" className="hover:text-foreground transition-colors">Контакты</a></li>
                 <li><a href="#blog" className="hover:text-foreground transition-colors">Блог</a></li>
-                <li><a href="#careers" className="hover:text-foreground transition-colors">Карьера</a></li>
+                <li><Link to="/careers" className="hover:text-foreground transition-colors">Карьера</Link></li>
               </ul>
             </div>
           </div>
