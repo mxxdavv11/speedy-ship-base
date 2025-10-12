@@ -129,7 +129,7 @@ export default function Careers() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary-blue/10 via-primary-violet/10 to-accent-green/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
-            Присоединяйтесь к команде Полка+
+            Присоединяйтесь к команде супергероев Полка+
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             Мы создаем будущее фулфилмента в России. Станьте частью инновационной команды!
