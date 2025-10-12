@@ -14,7 +14,7 @@ const VACANCIES = [
   {
     id: 1,
     title: "Оператор склада",
-    location: "Москва, Котельники",
+    location: "Самара",
     type: "Полная занятость",
     salary: "от 60 000 ₽",
     experience: "Без опыта",
@@ -25,7 +25,7 @@ const VACANCIES = [
   {
     id: 2,
     title: "Менеджер по работе с маркетплейсами",
-    location: "Москва (офис/удаленно)",
+    location: "Самара (офис/удаленно)",
     type: "Полная занятость",
     salary: "от 80 000 ₽",
     experience: "От 1 года",
@@ -36,7 +36,7 @@ const VACANCIES = [
   {
     id: 3,
     title: "Кладовщик",
-    location: "Москва, Котельники",
+    location: "Самара",
     type: "Полная занятость",
     salary: "от 65 000 ₽",
     experience: "От 6 месяцев",
@@ -47,18 +47,18 @@ const VACANCIES = [
   {
     id: 4,
     title: "Водитель-экспедитор",
-    location: "Москва и область",
+    location: "Самара и область",
     type: "Полная занятость",
     salary: "от 90 000 ₽",
     experience: "От 2 лет",
     description: "Доставка грузов по маршруту. Категория B, C. Работа на автомобиле компании.",
-    requirements: ["Права категории B, C", "Опыт от 2 лет", "Знание Москвы"],
+    requirements: ["Права категории B, C", "Опыт от 2 лет", "Знание Самары"],
     benefits: ["Корпоративный автомобиль", "ДМС", "Топливо за счет компании"]
   },
   {
     id: 5,
     title: "Фотограф товаров",
-    location: "Москва, Котельники",
+    location: "Самара",
     type: "Полная/частичная занятость",
     salary: "от 70 000 ₽",
     experience: "От 1 года",
@@ -69,7 +69,7 @@ const VACANCIES = [
   {
     id: 6,
     title: "Упаковщик",
-    location: "Москва, Котельники",
+    location: "Самара",
     type: "Полная/частичная занятость",
     salary: "от 55 000 ₽",
     experience: "Без опыта",
@@ -187,8 +187,7 @@ export default function Careers() {
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none"
               >
                 <option value="all">Все локации</option>
-                <option value="Москва">Москва</option>
-                <option value="Котельники">Котельники</option>
+                <option value="Самара">Самара</option>
                 <option value="удаленно">Удаленно</option>
               </select>
             </div>
