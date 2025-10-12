@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, User, ArrowRight } from "lucide-react";
 import { ModernCard } from "@/components/ModernCard";
 
@@ -105,41 +105,43 @@ export default function Blog() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {BLOG_POSTS.map((post) => (
-            <ModernCard key={post.id} className="p-6 hover:shadow-elegant transition-all cursor-pointer group">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                  {post.category}
-                </span>
-                <span className="text-sm text-muted-foreground">{post.readTime}</span>
-              </div>
-              
-              <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                {post.title}
-              </h3>
-              
-              <p className="text-muted-foreground mb-4 line-clamp-3">
-                {post.excerpt}
-              </p>
-              
-              <div className="flex items-center justify-between pt-4 border-t border-border">
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-4 h-4" />
-                    {post.date}
+            <Link key={post.id} to={`/blog/${post.id}`}>
+              <ModernCard className="p-6 hover:shadow-elegant transition-all cursor-pointer group h-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                    {post.category}
                   </span>
+                  <span className="text-sm text-muted-foreground">{post.readTime}</span>
                 </div>
                 
-                <button className="flex items-center gap-1 text-primary hover:gap-2 transition-all">
-                  Читать
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-              
-              <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
-                <User className="w-4 h-4" />
-                {post.author}
-              </div>
-            </ModernCard>
+                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  {post.title}
+                </h3>
+                
+                <p className="text-muted-foreground mb-4 line-clamp-3">
+                  {post.excerpt}
+                </p>
+                
+                <div className="flex items-center justify-between pt-4 border-t border-border">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      {post.date}
+                    </span>
+                  </div>
+                  
+                  <button className="flex items-center gap-1 text-primary hover:gap-2 transition-all">
+                    Читать
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+                
+                <div className="flex items-center gap-2 mt-3 text-sm text-muted-foreground">
+                  <User className="w-4 h-4" />
+                  {post.author}
+                </div>
+              </ModernCard>
+            </Link>
           ))}
         </div>
       </section>
