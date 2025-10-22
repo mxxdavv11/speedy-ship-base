@@ -29,7 +29,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Отправляем email владельцу (вам)
     const emailResponse = await resend.emails.send({
-      from: "Полка+ <onboarding@resend.dev>",
+      from: "Полка+ <noreply@polka-plus.ru>",
       to: ["polkapluss@yandex.ru"], // Ваша почта
       subject: `Новая заявка от ${name}`,
       html: `
