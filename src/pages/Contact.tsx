@@ -75,7 +75,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Телефон</h3>
-                    <p className="text-muted-foreground mb-1">+7 (846) 123-45-67</p>
+                    <p className="text-muted-foreground mb-1">+7 986 000-63-00</p>
                     <p className="text-sm text-muted-foreground">Звонки принимаются 24/7</p>
                   </div>
                 </div>

@@ -1241,7 +1241,7 @@ export default function Index() {
                 }}>
                     📞
                   </div>
-                  <span>+7 (917) 101-01-63</span>
+                  <span>+7 986 000-63-00</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{
@@ -1312,7 +1312,7 @@ export default function Index() {
                 Склад, упаковка, доставка и возвраты под ключ.
               </p>
               <div className="flex gap-4">
-                <a href="tel:+7800123456" className="text-primary hover:text-primary/80 transition-colors">+7 (917) 101-01-63</a>
+                <a href="tel:+79860006300" className="text-primary hover:text-primary/80 transition-colors">+7 986 000-63-00</a>
                 <a href="mailto:info@polka-plus.ru" className="text-primary hover:text-primary/80 transition-colors">
                   info@polka-plus.ru
                 </a>
