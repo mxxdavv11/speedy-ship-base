@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Building2, ClipboardList, ScanBarcode, ShoppingBag, Truck, Home, Shield, ChevronUp, Star, Users, TrendingUp, Clock, Camera, Play, Maximize2, Send, MessageCircle, Mail, Package } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { TechStats } from "@/components/TechStats";
 import { ParticleBackground } from "@/components/ParticleBackground";
 import { GlowingOrb } from "@/components/GlowingOrb";
@@ -110,6 +111,7 @@ function Modal({
     </div>;
 }
 export default function Index() {
+  const { toast } = useToast();
   const [activePage, setActivePage] = useState('home'); // 'home' | 'account'
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
@@ -118,6 +120,7 @@ export default function Index() {
   const [showStats, setShowStats] = useState(false);
   const [showInDevelopment, setShowInDevelopment] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'finance', 'orders', 'surveillance'
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({
     inn: ''
   });
@@ -149,22 +152,55 @@ export default function Index() {
     if (contactForm.email && !/\S+@\S+\.\S+/.test(contactForm.email)) errors.email = 'Неверный формат email';
     return errors;
   };
-  const handleContactSubmit = e => {
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
     const errors = validateContactForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-    // Здесь отправка формы
-    alert('Спасибо! Мы свяжемся с вами в ближайшее время.');
-    setContactForm({
-      name: '',
-      phone: '',
-      email: '',
-      message: ''
-    });
-    setFormErrors({});
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(contactForm),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Заявка отправлена!",
+          description: "Мы свяжемся с вами в ближайшее время.",
+        });
+        setContactForm({
+          name: '',
+          phone: '',
+          email: '',
+          message: ''
+        });
+        setFormErrors({});
+      } else {
+        throw new Error(data.error || 'Ошибка отправки');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить заявку. Попробуйте позже или позвоните нам.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   const handleContactChange = field => e => {
     setContactForm(prev => ({
@@ -1245,11 +1281,16 @@ export default function Index() {
                 
                 <textarea placeholder="Кратко опишите объёмы и задачи" value={contactForm.message} onChange={handleContactChange('message')} className="w-full rounded-xl px-4 py-3 text-neutral-900" rows={4} />
                 
-                <button type="submit" className="w-full mt-4 px-5 py-3 rounded-2xl font-semibold" style={{
-                backgroundColor: COLORS.pink,
-                color: 'white'
-              }}>
-                  Отправить заявку
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full mt-4 px-5 py-3 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed" 
+                  style={{
+                    backgroundColor: COLORS.pink,
+                    color: 'white'
+                  }}
+                >
+                  {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
                 </button>
               </form>
             </div>
