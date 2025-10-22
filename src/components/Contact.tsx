@@ -44,7 +44,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="font-semibold">Адрес</p>
-                  <p className="text-muted-foreground">Самара, ул.Братьев Корастелевых, 3к2</p>
+                  <p className="text-muted-foreground">г. Самара, ул. Братьев Коростелевых, 3к2</p>
                 </div>
               </div>
             </div>

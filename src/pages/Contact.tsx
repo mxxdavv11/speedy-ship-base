@@ -101,7 +101,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Адрес</h3>
-                    <p className="text-muted-foreground mb-1">г. Самара, ул. Складская, д. 10</p>
+                    <p className="text-muted-foreground mb-1">г. Самара, ул. Братьев Коростелевых, 3к2</p>
                     <p className="text-sm text-muted-foreground">Офис и складской комплекс</p>
                   </div>
                 </div>
