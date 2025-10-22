@@ -151,7 +151,7 @@ export default function Services() {
             {[
               { title: "Фотосъемка товаров", description: "Профессиональная предметная съемка", price: "от 150 ₽/SKU" },
               { title: "Создание поставок", description: "Формирование документов для МП", price: "от 10 ₽" },
-              { title: "Аудит товаров", description: "Контроль качества и остатков", price: "от 2000 ₽/месяц" }
+              { title: "Аудит товаров", description: "Контроль качества и остатков", price: "от 100 ₽/месяц" }
             ].map((addon, idx) => (
               <ModernCard key={idx} className="p-6">
                 <h3 className="font-semibold mb-2">{addon.title}</h3>
