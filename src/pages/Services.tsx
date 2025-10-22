@@ -149,7 +149,7 @@ export default function Services() {
           <h2 className="text-3xl font-bold text-center mb-12">Дополнительные услуги</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { title: "Фотосъемка товаров", description: "Профессиональная предметная съемка", price: "от 150 ₽/SKU" },
+              { title: "Фотосъемка товаров", description: "Профессиональная предметная съемка", price: "от 10 ₽" },
               { title: "Создание поставок", description: "Формирование документов для МП", price: "от 10 ₽" },
               { title: "Аудит товаров", description: "Контроль качества и остатков", price: "от 100 ₽/месяц" }
             ].map((addon, idx) => (
