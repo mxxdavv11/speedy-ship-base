@@ -34,7 +34,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="font-semibold">Email</p>
-                  <p className="text-muted-foreground">info@fulfillpro.ru</p>
+                  <p className="text-muted-foreground">polkapluss@yandex.ru</p>
                 </div>
               </div>
               
@@ -44,7 +44,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="font-semibold">Адрес</p>
-                  <p className="text-muted-foreground">Москва, ул. Логистическая, 15</p>
+                  <p className="text-muted-foreground">Самара, ул.Братьев Корастелевых, 3к2</p>
                 </div>
               </div>
             </div>

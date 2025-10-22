@@ -1249,7 +1249,7 @@ export default function Index() {
                 }}>
                     ✉️
                   </div>
-                  <span>polka-pluss@yandex.ru</span>
+                  <span>polkapluss@yandex.ru</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{
@@ -1313,8 +1313,8 @@ export default function Index() {
               </p>
               <div className="flex gap-4">
                 <a href="tel:+79860006300" className="text-primary hover:text-primary/80 transition-colors">+7 986 000-63-00</a>
-                <a href="mailto:info@polka-plus.ru" className="text-primary hover:text-primary/80 transition-colors">
-                  info@polka-plus.ru
+                <a href="mailto:polkapluss@yandex.ru" className="text-primary hover:text-primary/80 transition-colors">
+                  polkapluss@yandex.ru
                 </a>
               </div>
             </div>

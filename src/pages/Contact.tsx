@@ -88,7 +88,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-2">Email</h3>
-                    <p className="text-muted-foreground mb-1">info@polkaplus.ru</p>
+                    <p className="text-muted-foreground mb-1">polkapluss@yandex.ru</p>
                     <p className="text-sm text-muted-foreground">Ответим в течение часа</p>
                   </div>
                 </div>
