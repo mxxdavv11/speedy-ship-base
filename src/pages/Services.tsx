@@ -150,7 +150,7 @@ export default function Services() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { title: "Фотосъемка товаров", description: "Профессиональная предметная съемка", price: "от 150 ₽/SKU" },
-              { title: "Создание поставок", description: "Формирование документов для МП", price: "от 150 ₽/поставка" },
+              { title: "Создание поставок", description: "Формирование документов для МП", price: "от 10 ₽" },
               { title: "Аудит товаров", description: "Контроль качества и остатков", price: "от 2000 ₽/месяц" }
             ].map((addon, idx) => (
               <ModernCard key={idx} className="p-6">
