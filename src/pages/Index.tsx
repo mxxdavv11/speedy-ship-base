@@ -116,6 +116,7 @@ export default function Index() {
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showStats, setShowStats] = useState(false);
+  const [showInDevelopment, setShowInDevelopment] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'finance', 'orders', 'surveillance'
   const [errors, setErrors] = useState({
     inn: ''
@@ -600,8 +601,8 @@ export default function Index() {
           </nav>
           <div className="flex items-center gap-2">
             {!user ? <>
-                <button onClick={() => setShowLogin(true)} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Войти</button>
-                <button onClick={() => setShowRegister(true)} className="px-3 py-2 rounded-xl font-semibold" style={{
+                <button onClick={() => setShowInDevelopment(true)} className="px-3 py-2 rounded-xl bg-white/10 text-white border border-white/20">Войти</button>
+                <button onClick={() => setShowInDevelopment(true)} className="px-3 py-2 rounded-xl font-semibold" style={{
               backgroundColor: COLORS.pink,
               color: 'white'
             }}>Регистрация</button>
@@ -677,6 +678,34 @@ export default function Index() {
           }}>Зарегистрироваться</button>
           </div>
         </form>
+      </Modal>
+
+      {/* Модальное окно "В разработке" */}
+      <Modal open={showInDevelopment} onClose={() => setShowInDevelopment(false)} title="Личный кабинет">
+        <div className="text-center py-8">
+          <div className="mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
+              <Package className="w-10 h-10 text-primary" />
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.dark }}>
+            Раздел в разработке
+          </h3>
+          <p className="text-gray-600 mb-6">
+            Мы работаем над созданием личного кабинета. <br />
+            Скоро здесь вы сможете управлять своими заказами и услугами.
+          </p>
+          <button 
+            onClick={() => setShowInDevelopment(false)}
+            className="px-6 py-3 rounded-xl font-semibold transition-colors"
+            style={{
+              backgroundColor: COLORS.pink,
+              color: 'white'
+            }}
+          >
+            Понятно
+          </button>
+        </div>
       </Modal>
 
       {/* HERO */}
