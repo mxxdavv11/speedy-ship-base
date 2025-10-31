@@ -25,14 +25,14 @@ jobs:
 
       - name: Ensure destination exists
         run: |
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p /opt/speedy-ship-base"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p /opt/speedy-ship-base"
 
       - name: Copy files via rsync (overwrite; prune extras)
         run: |
           rsync -az --delete \
             --exclude ".git/" \
             --exclude ".github/" \
-            -e "ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=yes" \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
             ./ "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/opt/speedy-ship-base/"
 
       #- name: delete old files
