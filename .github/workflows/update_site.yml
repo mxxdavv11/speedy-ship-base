@@ -19,13 +19,13 @@ jobs:
           printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Trust host key
-        run: |
-          ssh-keyscan "${SSH_HOST}" >> ~/.ssh/known_hosts
+      # - name: Trust host key
+      #  run: |
+      #    ssh-keyscan "${SSH_HOST}" >> ~/.ssh/known_hosts
 
       - name: Ensure destination exists
         run: |
-          ssh "${SSH_USER}@${SSH_HOST}" "mkdir -p '${DEST_DIR}'"
+          ssh -i ~/.ssh/id_rsa "${SSH_USER}@${SSH_HOST}" "mkdir -p '${DEST_DIR}'"
 
       - name: Copy files via rsync (overwrite; prune extras)
         run: |
@@ -33,7 +33,7 @@ jobs:
             --exclude ".git/" \
             --exclude ".github/" \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
-            ./ "${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
+            ./ "${SSH_USER}@${SSH_HOST}:/opt/speedy-ship-base/"
 
       #- name: delete old files
       #  run: |
