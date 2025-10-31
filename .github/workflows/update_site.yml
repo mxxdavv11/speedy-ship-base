@@ -25,6 +25,7 @@ jobs:
 
       - name: Ensure destination exists
         run: |
+          ssh-keyscan -t ed25519,rsa 158.160.194.102   >> ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa davmxxx@158.160.194.102 "mkdir -p /opt/speedy-ship-base"
 
       - name: Copy files via rsync (overwrite; prune extras)
