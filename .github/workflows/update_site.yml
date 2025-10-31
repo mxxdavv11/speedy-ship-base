@@ -33,6 +33,7 @@ jobs:
           rsync -az --delete \
             --exclude ".git/" \
             --exclude ".github/" \
+            --exclude "node_modules/***"
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
             --rsync-path="sudo rsync" \
             ./ "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/opt/speedy-ship-base/"
