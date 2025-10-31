@@ -1295,11 +1295,7 @@ export default function Index() {
                 
                 <h3 className="text-xl font-bold">Полка+</h3>
               </div>
-              <p className="text-muted-foreground mb-4 max-w-md">Современные решения фулфилмента для вашего бизнеса. Склад, упаковка, доставка и возвраты под ключ. КОСТЯ ХУЙ
-
-
-
-            </p>
+              <p className="text-muted-foreground mb-4 max-w-md">Современные решения фулфилмента для вашего бизнеса. Склад, упаковка, доставка и возвраты под ключ. </p>
               <div className="flex gap-4">
                 <a href="tel:+79860006300" className="text-primary hover:text-primary/80 transition-colors">+7 986 000-63-00</a>
                 <a href="mailto:polkapluss@yandex.ru" className="text-primary hover:text-primary/80 transition-colors">
