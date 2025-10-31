@@ -25,7 +25,7 @@ jobs:
 
       - name: Ensure destination exists
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p /opt/speedy-ship-base"
+          ssh -i ~/.ssh/id_rsa davmxxx@158.160.194.102 "mkdir -p /opt/speedy-ship-base"
 
       - name: Copy files via rsync (overwrite; prune extras)
         run: |
