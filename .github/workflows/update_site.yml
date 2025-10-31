@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: delete old files
+        run: |
+          sudo rm -rf /opt/speedy-ship-base/*
+
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.4
         with:
