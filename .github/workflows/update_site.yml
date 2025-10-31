@@ -13,18 +13,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: delete old files
+      - name: Write SSH key
         run: |
-          sudo rm -rf /opt/speedy-ship-base/*
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
-          target: "/opt/speedy-ship-base"
+      - name: Trust host key
+        run: |
+          ssh-keyscan "${SSH_HOST}" >> ~/.ssh/known_hosts
+
+      - name: Ensure destination exists
+        run: |
+          ssh "${SSH_USER}@${SSH_HOST}" "mkdir -p '${DEST_DIR}'"
+
+      - name: Copy files via rsync (overwrite; prune extras)
+        run: |
+          rsync -az --delete \
+            --exclude ".git/" \
+            --exclude ".github/" \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
+            ./ "${SSH_USER}@${SSH_HOST}:${DEST_DIR}/"
+
+      #- name: delete old files
+      #  run: |
+      #    sudo rm -rf /opt/speedy-ship-base/*
+
+      # - name: Copy files to server
+        
 
       - name: Restart site service
         uses: appleboy/ssh-action@v1.0.3
