@@ -30,10 +30,11 @@ jobs:
 
       - name: Copy files via rsync (overwrite; prune extras)
         run: |
-          rsync -az --delete \
+          sudo rsync -az --delete \
             --exclude ".git/" \
             --exclude ".github/" \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
+            --rsync-path="sudo rsync" \
             ./ "${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/opt/speedy-ship-base/"
 
       #- name: delete old files
