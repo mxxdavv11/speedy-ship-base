@@ -16,7 +16,7 @@ jobs:
       - name: Write SSH key
         run: |
           install -m 700 -d ~/.ssh
-          printf '%s\n' ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       # - name: Trust host key
