@@ -30,7 +30,7 @@ jobs:
 
       - name: Copy files via rsync (overwrite; prune extras)
         run: |
-          sudo rsync -az --delete \
+          rsync -az --delete \
             --exclude ".git/" \
             --exclude ".github/" \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=yes" \
