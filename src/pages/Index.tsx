@@ -111,7 +111,9 @@ function Modal({
     </div>;
 }
 export default function Index() {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [activePage, setActivePage] = useState('home'); // 'home' | 'account'
   const [user, setUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
@@ -152,34 +154,27 @@ export default function Index() {
     if (contactForm.email && !/\S+@\S+\.\S+/.test(contactForm.email)) errors.email = 'Неверный формат email';
     return errors;
   };
-  const handleContactSubmit = async (e) => {
+  const handleContactSubmit = async e => {
     e.preventDefault();
     const errors = validateContactForm();
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-
     setIsSubmitting(true);
-
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(contactForm),
-        }
-      );
-
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(contactForm)
+      });
       const data = await response.json();
-
       if (data.success) {
         toast({
           title: "Заявка отправлена!",
-          description: "Мы свяжемся с вами в ближайшее время.",
+          description: "Мы свяжемся с вами в ближайшее время."
         });
         setContactForm({
           name: '',
@@ -196,7 +191,7 @@ export default function Index() {
       toast({
         title: "Ошибка",
         description: "Не удалось отправить заявку. Попробуйте позже или позвоните нам.",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
@@ -724,21 +719,19 @@ export default function Index() {
               <Package className="w-10 h-10 text-primary" />
             </div>
           </div>
-          <h3 className="text-xl font-semibold mb-3" style={{ color: COLORS.dark }}>
+          <h3 className="text-xl font-semibold mb-3" style={{
+          color: COLORS.dark
+        }}>
             Раздел в разработке
           </h3>
           <p className="text-gray-600 mb-6">
             Мы работаем над созданием личного кабинета. <br />
             Скоро здесь вы сможете управлять своими заказами и услугами.
           </p>
-          <button 
-            onClick={() => setShowInDevelopment(false)}
-            className="px-6 py-3 rounded-xl font-semibold transition-colors"
-            style={{
-              backgroundColor: COLORS.pink,
-              color: 'white'
-            }}
-          >
+          <button onClick={() => setShowInDevelopment(false)} className="px-6 py-3 rounded-xl font-semibold transition-colors" style={{
+          backgroundColor: COLORS.pink,
+          color: 'white'
+        }}>
             Понятно
           </button>
         </div>
@@ -1281,15 +1274,10 @@ export default function Index() {
                 
                 <textarea placeholder="Кратко опишите объёмы и задачи" value={contactForm.message} onChange={handleContactChange('message')} className="w-full rounded-xl px-4 py-3 text-neutral-900" rows={4} />
                 
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full mt-4 px-5 py-3 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed" 
-                  style={{
-                    backgroundColor: COLORS.pink,
-                    color: 'white'
-                  }}
-                >
+                <button type="submit" disabled={isSubmitting} className="w-full mt-4 px-5 py-3 rounded-2xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed" style={{
+                backgroundColor: COLORS.pink,
+                color: 'white'
+              }}>
                   {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
                 </button>
               </form>
@@ -1307,10 +1295,11 @@ export default function Index() {
                 
                 <h3 className="text-xl font-bold">Полка+</h3>
               </div>
-              <p className="text-muted-foreground mb-4 max-w-md">
-                Современные решения фулфилмента для вашего бизнеса. 
-                Склад, упаковка, доставка и возвраты под ключ.
-              </p>
+              <p className="text-muted-foreground mb-4 max-w-md">Современные решения фулфилмента для вашего бизнеса. Склад, упаковка, доставка и возвраты под ключ. КОСТЯ ХУЙ
+
+
+
+            </p>
               <div className="flex gap-4">
                 <a href="tel:+79860006300" className="text-primary hover:text-primary/80 transition-colors">+7 986 000-63-00</a>
                 <a href="mailto:polkapluss@yandex.ru" className="text-primary hover:text-primary/80 transition-colors">
