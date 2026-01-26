@@ -117,7 +117,7 @@ export default function Privacy() {
             <p className="text-muted-foreground">
               По вопросам обработки персональных данных обращайтесь:<br />
               Email: privacy@polkaplus.ru<br />
-              Телефон: +7 (846) 123-45-67
+              Телефон: +7 (917) 101-01-63
             </p>
           </section>
         </ModernCard>
