@@ -1,3 +1,4 @@
+<meta name="yandex-verification" content="49a4bb1f8b6081f9" />
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Zap } from "lucide-react";
