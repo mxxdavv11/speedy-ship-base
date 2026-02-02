@@ -133,9 +133,9 @@ export default function Terms() {
             <p className="text-muted-foreground">
               ООО "Полка Плюс"<br />
               ИНН: 1234567890<br />
-              Email: legal@polkaplus.ru<br />
+              Email: info@polkaplus.ru<br />
               Телефон: +7 (846) 123-45-67<br />
-              Адрес: г. Самара, ул. Складская, д. 10
+              Адрес: г. Самара, ул. Складская, д. 13245
             </p>
           </section>
         </ModernCard>
