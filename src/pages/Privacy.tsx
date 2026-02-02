@@ -116,7 +116,7 @@ export default function Privacy() {
             <h2 className="text-2xl font-semibold mb-3">8. Контактная информация</h2>
             <p className="text-muted-foreground">
               По вопросам обработки персональных данных обращайтесь:<br />
-              Email: privacy@polkaplus.ru<br />
+              Email: info@polkaplus.ru<br />
               Телефон: +7 (917) 101-01-63
             </p>
           </section>
